@@ -1,0 +1,2 @@
+# AywaCore
+Aywa Platform Core
