@@ -3,4 +3,4 @@ Aywa is Decentralized Communication and Rewards Platform with CPU-only mining al
 Please, ask your questions with core built-in messanger.
 The source code is on BitBucket: https://bitbucket.org/CryptoDev_Space/aywacore/
 
-# AywaCore Download - https://github.com/GetAywa/AywaCore/releases
+# [AywaCore Download](https://github.com/GetAywa/AywaCore/releases)
