@@ -27,7 +27,7 @@ Development Process
 -------------------
 
 The `master` branch is meant to be stable. Development is normally done in separate branches.
-[Tags](https://github.com/aywa/aywacore/tags) are created to indicate new official,
+[Tags](https://github.com/getaywa/aywacore/tags) are created to indicate new official,
 stable release versions of Aywa Core.
 
 The contribution workflow is described in [CONTRIBUTING.md](CONTRIBUTING.md).
@@ -64,12 +64,10 @@ Translations
 ------------
 
 Changes to translations as well as new translations can be submitted to
-[Aywa Core's Transifex page](https://www.transifex.com/projects/p/aywa/).
+[Aywa Core's Issues page](https://bitbucket.org/CryptoDev_Space/aywacore/issues/).
 
 Translations are periodically pulled from Transifex and merged into the git repository. See the
 [translation process](doc/translation_process.md) for details on how this works.
 
 **Important**: We do not accept translation changes as GitHub pull requests because the next
 pull from Transifex would automatically overwrite them again.
-
-Translators should also follow the [forum](https://www.aywapay.org/forum/topic/aywa-worldwide-collaboration.88/).
