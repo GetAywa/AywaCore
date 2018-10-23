@@ -11,17 +11,17 @@ The source code is availible on BitBucket: https://bitbucket.org/CryptoDev_Space
 
 ## [AywaCore Download](https://github.com/GetAywa/AywaCore/releases)
 
-  Look at some AywaCore features:
+Look at some AywaCore features:
 
-  Overview Page
-  ![](http://getaywa.org/wp-content/uploads/2018/09/preview_video.png)
+Overview Page
+![](http://getaywa.org/wp-content/uploads/2018/09/preview_video.png)
 
-  Creating Proposal
+Creating Proposal
 ￼
-  Voting Process
-  ![](http://getaywa.org/wp-content/uploads/2018/10/proposal_page.png)￼
+Voting Process
+![](http://getaywa.org/wp-content/uploads/2018/10/proposal_page.png)￼
 
-  Public Channels. Reply to Sender only.
+Public Channels. Reply to Sender only.
 
-  Reward for Proposal
+Reward for Proposal
 ￼
