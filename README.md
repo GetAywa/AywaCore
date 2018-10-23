@@ -17,8 +17,9 @@ Overview Page
 
 ![](http://getaywa.org/wp-content/uploads/2018/09/preview_video.png)
 
-Creating Proposal
+Proposal Creation
 ￼
+![www.getaywa.org](http://getaywa.org/wp-content/uploads/2018/10/ProposalCreation.png)
 
 
 Voting Process
