@@ -10,3 +10,16 @@ If required information was not found you can ask questions at the AywaCore buil
 The source code is availible on BitBucket: https://bitbucket.org/CryptoDev_Space/aywacore/
 
 ## [AywaCore Download](https://github.com/GetAywa/AywaCore/releases)
+
+Look at some AywaCore features:
+
+Creating Proposal
+
+
+￼
+Voting Process
+￼
+Public Channels. Reply to Sender only.
+
+Reward for Proposal
+￼
