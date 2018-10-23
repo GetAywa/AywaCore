@@ -1,0 +1,22 @@
+[Unit]
+Description=Aywa's distributed currency daemon
+After=network.target
+
+[Service]
+User=aywacore
+Group=aywacore
+
+Type=forking
+PIDFile=/var/lib/aywad/aywad.pid
+ExecStart=/usr/bin/aywad -daemon -pid=/var/lib/aywad/aywad.pid \
+-conf=/etc/aywacore/aywa.conf -datadir=/var/lib/aywad -disablewallet
+
+Restart=always
+PrivateTmp=true
+TimeoutStopSec=60s
+TimeoutStartSec=2s
+StartLimitInterval=120s
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target

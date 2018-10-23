@@ -1,0 +1,67 @@
+#!/bin/bash
+#
+#  aywad The Aywa Core server.
+#
+#
+# chkconfig: 345 80 20
+# description: aywad
+# processname: aywad
+#
+
+# Source function library.
+. /etc/init.d/functions
+
+# you can override defaults in /etc/sysconfig/aywad, see below
+if [ -f /etc/sysconfig/aywad ]; then
+        . /etc/sysconfig/aywad
+fi
+
+RETVAL=0
+
+prog=aywad
+# you can override the lockfile via BITCOIND_LOCKFILE in /etc/sysconfig/aywad
+lockfile=${BITCOIND_LOCKFILE-/var/lock/subsys/aywad}
+
+# aywad defaults to /usr/bin/aywad, override with BITCOIND_BIN
+aywad=${BITCOIND_BIN-/usr/bin/aywad}
+
+# aywad opts default to -disablewallet, override with BITCOIND_OPTS
+aywad_opts=${BITCOIND_OPTS--disablewallet}
+
+start() {
+    echo -n $"Starting $prog: "
+    daemon $DAEMONOPTS $aywad $aywad_opts
+    RETVAL=$?
+    echo
+    [ $RETVAL -eq 0 ] && touch $lockfile
+    return $RETVAL
+}
+
+stop() {
+    echo -n $"Stopping $prog: "
+    killproc $prog
+    RETVAL=$?
+    echo
+    [ $RETVAL -eq 0 ] && rm -f $lockfile
+    return $RETVAL
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    status)
+        status $prog
+        ;;
+    restart)
+        stop
+        start
+        ;;
+    *)
+        echo "Usage: service $prog {start|stop|status|restart}"
+        exit 1
+        ;;
+esac

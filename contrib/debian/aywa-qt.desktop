@@ -1,0 +1,12 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Aywa
+Comment=Aywa P2P Cryptocurrency
+Comment[fr]=Aywa, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=Aywa, eşten eşe kriptografik sanal para birimi
+Exec=aywa-qt %u
+Terminal=false
+Type=Application
+Icon=aywa128
+MimeType=x-scheme-handler/aywa;
+Categories=Office;Finance;

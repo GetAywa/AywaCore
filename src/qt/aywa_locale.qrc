@@ -1,0 +1,20 @@
+<!DOCTYPE RCC><RCC version="1.0">
+    <qresource prefix="/translations">
+        <file alias="bg">locale/aywa_bg.qm</file>
+        <file alias="de">locale/aywa_de.qm</file>
+        <file alias="en">locale/aywa_en.qm</file>
+        <file alias="es">locale/aywa_es.qm</file>
+        <file alias="fi">locale/aywa_fi.qm</file>
+        <file alias="fr">locale/aywa_fr.qm</file>
+        <file alias="it">locale/aywa_it.qm</file>
+        <file alias="ja">locale/aywa_ja.qm</file>
+        <file alias="pl">locale/aywa_pl.qm</file>
+        <file alias="pt">locale/aywa_pt.qm</file>
+        <file alias="ru">locale/aywa_ru.qm</file>
+        <file alias="sk">locale/aywa_sk.qm</file>
+        <file alias="sv">locale/aywa_sv.qm</file>
+        <file alias="vi">locale/aywa_vi.qm</file>
+        <file alias="zh_CN">locale/aywa_zh_CN.qm</file>
+        <file alias="zh_TW">locale/aywa_zh_TW.qm</file>
+    </qresource>
+</RCC>
