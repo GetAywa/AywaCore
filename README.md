@@ -19,11 +19,17 @@ Overview Page
 
 Creating Proposal
 ￼
+
+
 Voting Process
 
 ![](http://getaywa.org/wp-content/uploads/2018/10/proposal_page.png)￼
 
-Public Channels. Reply to Sender only.
+Messages and Public Channels. Reply to Sender only.
+
+![](http://getaywa.org/wp-content/uploads/2018/10/messagges_page.png)
+![](http://getaywa.org/wp-content/uploads/2018/10/smsg3.png)
 
 Reward for Proposal
 ￼
+![](http://getaywa.org/wp-content/uploads/2018/10/reward_for_proposal.png)
