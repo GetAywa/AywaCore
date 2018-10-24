@@ -1,7 +1,7 @@
 Aywa Core staging tree 0.1
 ===============================
 
-https://www.aywa.org
+https://www.getaywa.org
 
 
 What is Aywa?
