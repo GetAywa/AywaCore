@@ -40,16 +40,16 @@ NOTE: Building with Qt4 is still supported, however, doing so could result in a 
 
 1. Clone the GitHub tree to get the source code and go into the directory.
 
-        git clone https://bitbucket.org/CryptoDev_Space/aywacorepublic/aywa.git
-        cd aywa
+        git clone https://bitbucket.org/CryptoDev_Space/aywacore.git
+        cd aywacore
 
 2.  Build Aywa Core:
     This will configure and build the headless aywa binaries as well as the gui (if Qt is found).
     You can disable the gui build by passing `--without-gui` to configure. To disable test use also '--disable-tests --disable-qtests'.
 
         ./autogen.sh
-        ./configure
-        make
+        ./configure --disable-tests --disable-qtests --disable-bench
+        make -j4
 
 3.  It is also a good idea to build and run the unit tests:
 
