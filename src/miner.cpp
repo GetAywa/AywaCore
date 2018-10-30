@@ -456,9 +456,14 @@ void static BitcoinMiner(const CChainParams& chainparams, CConnman& connman)
             //
             int64_t nStart = GetTime();
             arith_uint256 hashTarget = arith_uint256().SetCompact(pblock->nBits);
+
+            int64_t nStartMeasureHashTime = nStart, nEndMeasureHashTime;
+            double nHashRate = 0; uint32_t nLastNonce=1;
+
             while (true)
             {
                 unsigned int nHashesDone = 0;
+
 
                 uint256 hash;
                 while (true)
@@ -480,8 +485,18 @@ void static BitcoinMiner(const CChainParams& chainparams, CConnman& connman)
 
                         break;
                     }
+
                     pblock->nNonce += 1;
                     nHashesDone += 1;
+
+                    if (GetTime() - nStartMeasureHashTime >= 10){
+                        nEndMeasureHashTime = GetTime();
+                        nHashRate = (pblock->nNonce-nLastNonce)/10;
+                        std::cout << "BlockHeight:"<<pindexPrev->nHeight<< "   LastNonce:" << nLastNonce <<"   HashRate: " << nHashRate << "\n";
+                        nLastNonce = pblock->nNonce;
+                        nStartMeasureHashTime = GetTime();
+                    }
+
                     if ((pblock->nNonce & 0xFF) == 0)
                         break;
                 }
