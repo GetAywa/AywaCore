@@ -684,13 +684,20 @@ void OverviewPage::DisablePrivateSendCompletely() {
 
 void OverviewPage::on_bnGenerate_clicked()
 {
+    toggleGenerate();
+}
+
+void OverviewPage::toggleGenerate(bool checkStatusOnly)//just check status and update labels if false
+{
     UniValue params (UniValue::VARR);
     UniValue uCurrentGenerateSetting (UniValue::VBOOL);
     uCurrentGenerateSetting.setBool(!GetBoolArg("-gen", false) ? true:false);
                                     //getgenerate(params, false).getBool());
                                     //GetBoolArg("-gen", false) ? true:false);
     params.push_back(uCurrentGenerateSetting);
-    setgenerate(params, false);
+    if (!checkStatusOnly)
+        setgenerate(params, false);
     params.clear();
     ui->bnGenerate->setText((GetBoolArg("-gen", false) ? "Stop Mining" :"Start Mining"));
+
 }

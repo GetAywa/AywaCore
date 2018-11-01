@@ -138,6 +138,16 @@ public:
         nPruneAfterHeight = 100000;
         genesis.nBits = UintToArith256(consensus.powLimit).GetCompact();
         genesis.nNonce = 25487;
+
+                arith_uint256 hashTarget = arith_uint256().SetCompact(genesis.nBits);
+                std::cout << strNetworkID << " ---\n";
+                std::cout << "  hashTarget: " << hashTarget.ToString() <<  "\n";
+                std::cout << "   time: " << genesis.nTime << "\n";
+                std::cout << "UInttoArith:" << consensus.powLimit.ToString() << "\n";
+                uint32_t hashTargwtUint= hashTarget.GetCompact();
+                std::cout << "UInttoArith:" << hashTargwtUint << "\n";
+
+
         genesis = CreateGenesisBlock(genesis.nTime, genesis.nNonce, genesis.nBits, 1, COIN);
                                      //1538344800, 25487, 0x1e0ffff0, 1, COIN);
         consensus.hashGenesisBlock = genesis.GetHash();

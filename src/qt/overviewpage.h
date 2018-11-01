@@ -80,6 +80,7 @@ private Q_SLOTS:
     void updateWatchOnlyLabels(bool showWatchOnly);
     void handleOutOfSyncWarningClicks();
     void on_bnGenerate_clicked();
+    void toggleGenerate(bool checkStatusOnly=false);
 };
 
 #endif // BITCOIN_QT_OVERVIEWPAGE_H
