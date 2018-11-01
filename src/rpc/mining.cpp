@@ -951,3 +951,20 @@ UniValue estimatesmartpriority(const UniValue& params, bool fHelp)
     result.push_back(Pair("blocks", answerFound));
     return result;
 }
+
+UniValue gethashrate(const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() != 0)
+        throw runtime_error(
+            "getgenerate\n"
+            "\nReturn if the hashrate generate coins. \n"
+            "\nResult\n"
+            "value hash per second      (double) 0 if the server is not set to generate coins\n"
+            "\nExamples:\n"
+            + HelpExampleCli("gethashrate", "")
+            + HelpExampleRpc("gethashrate", "")
+        );
+
+    LOCK(cs_main);
+    return GetCurrentHashRate();
+}

@@ -49,6 +49,14 @@ using namespace std;
 uint64_t nLastBlockTx = 0;
 uint64_t nLastBlockSize = 0;
 
+double current_hashrate=0;
+int mining_threads_count=0;
+
+double GetCurrentHashRate(){
+    return current_hashrate*mining_threads_count;
+}
+
+
 class ScoreCompare
 {
 public:
@@ -456,9 +464,14 @@ void static BitcoinMiner(const CChainParams& chainparams, CConnman& connman)
             //
             int64_t nStart = GetTime();
             arith_uint256 hashTarget = arith_uint256().SetCompact(pblock->nBits);
+
+            int64_t nStartMeasureHashTime = nStart, nEndMeasureHashTime;
+            double nHashRate = 0; uint32_t nLastNonce=1;
+
             while (true)
             {
                 unsigned int nHashesDone = 0;
+
 
                 uint256 hash;
                 while (true)
@@ -480,8 +493,21 @@ void static BitcoinMiner(const CChainParams& chainparams, CConnman& connman)
 
                         break;
                     }
+
                     pblock->nNonce += 1;
                     nHashesDone += 1;
+
+                    if (GetTime() - nStartMeasureHashTime >= 10){
+                        nEndMeasureHashTime = GetTime();
+                        nHashRate = (pblock->nNonce-nLastNonce)/10;
+
+                        std::cout << "BlockHeight:" << pindexPrev->nHeight << "   LastNonce:"
+                                  << nLastNonce <<"   HashRate: " << nHashRate << "Tread:"<< GetThreadName() <<"\n";
+                        current_hashrate = nHashRate;
+                        nLastNonce = pblock->nNonce;
+                        nStartMeasureHashTime = GetTime();
+                    }
+
                     if ((pblock->nNonce & 0xFF) == 0)
                         break;
                 }
@@ -534,12 +560,15 @@ void GenerateBitcoins(bool fGenerate, int nThreads, const CChainParams& chainpar
         minerThreads->interrupt_all();
         delete minerThreads;
         minerThreads = NULL;
+        current_hashrate = 0;
+        mining_threads_count = 0;
     }
 
     if (nThreads == 0 || !fGenerate)
         return;
 
     minerThreads = new boost::thread_group();
+    mining_threads_count = nThreads;
     for (int i = 0; i < nThreads; i++)
         minerThreads->create_thread(boost::bind(&BitcoinMiner, boost::cref(chainparams), boost::ref(connman)));
 }
