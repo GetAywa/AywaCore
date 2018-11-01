@@ -3,8 +3,8 @@
 todo.txt
 reset-files.bash
 
-AywaCore.creator.user
-AywaCore.creator
+*.creator.user
+*.creator
 
 *.tar.gz
 
