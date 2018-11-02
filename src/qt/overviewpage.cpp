@@ -687,17 +687,27 @@ void OverviewPage::on_bnGenerate_clicked()
     toggleGenerate();
 }
 
-void OverviewPage::toggleGenerate(bool checkStatusOnly)//just check status and update labels if false
+void OverviewPage::toggleGenerate(bool checkStatusOnly)//not toggle if checkStatusOnly=true
 {
+    bool fMiningEnabled = GetBoolArg("-gen", false);
     UniValue params (UniValue::VARR);
     UniValue uCurrentGenerateSetting (UniValue::VBOOL);
-    uCurrentGenerateSetting.setBool(!GetBoolArg("-gen", false) ? true:false);
+    uCurrentGenerateSetting.setBool(!fMiningEnabled ? true:false);
                                     //getgenerate(params, false).getBool());
                                     //GetBoolArg("-gen", false) ? true:false);
     params.push_back(uCurrentGenerateSetting);
+    params.push_back(ui->spinBoxMiningThreads->value());
     if (!checkStatusOnly)
         setgenerate(params, false);
     params.clear();
-    ui->bnGenerate->setText((GetBoolArg("-gen", false) ? "Stop Mining" :"Start Mining"));
+
+    UniValue uHashrate (UniValue::VSTR);
+    //uCurrentGenerateSetting.setBool(!fMiningEnabled ? true:false);
+
+    uHashrate = gethashrate(params, false);
+
+
+    ui->bnGenerate->setText(fMiningEnabled ? "Stop Mining" :"Start Mining");
+    //ui->labelTotalHashRate->setText(QString::fromStdString(uHashrate.get_str()));
 
 }

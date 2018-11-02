@@ -203,6 +203,11 @@ void MessagePage::setModel(MessageModel *model)
     //signal if wallet unlocked
     connect (model, SIGNAL(walletUnlockedSignal()), this, SLOT(updateMessagePage()));
 
+    //signal if join, leave channel or add o remove contact
+
+    connect (model, SIGNAL(updateMessagePage()), this, SLOT(updateMessagePage()));
+
+
 }
 
 void MessagePage::on_sendButton_clicked()
@@ -237,6 +242,7 @@ void MessagePage::on_sendButton_clicked()
     ui->plainTextEdit->clear();
     ui->plainTextEdit->setFocus();
     ui->listWidgetConversation->scrollToBottom();
+    ui->splitter_2->setSizes(QList<int>() << 100 << 200);
 
 }
 
@@ -666,4 +672,9 @@ void MessagePage::on_bnEmoji_clicked()
     QWidget * emojiPanel = new QWidget();
     emojiPanel->show();
 
+}
+
+void MessagePage::on_pushButton_clicked()
+{
+   updateContactList();
 }

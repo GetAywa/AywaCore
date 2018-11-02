@@ -90,6 +90,8 @@ private Q_SLOTS:
     void on_treeWidget_itemSelectionChanged();
     void on_treeWidget_itemActivated(QTreeWidgetItem *item, int column);
 
+    void on_pushButton_clicked();
+
 Q_SIGNALS:
     void doubleClicked(const QModelIndex&);
 };

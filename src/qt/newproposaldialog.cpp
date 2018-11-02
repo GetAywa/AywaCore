@@ -709,7 +709,7 @@ void NewProposalDialog::voteAction(std::string vote, std::string strProposalHash
         strVoteOutcome = vote;
     }
     else if (vote == "delete"){
-        strVoteSignal = "delete";//TODO -- deletion not working
+        strVoteSignal = "delete";
         strVoteOutcome = "yes";
     };
 
@@ -844,7 +844,7 @@ void NewProposalDialog::on_texteditProposalDescription_textChanged()
     if (ui->texteditProposalDescription->toPlainText().size()>1000)
     {
         QTextCursor  cursor = ui->texteditProposalDescription->textCursor();
-        QToolTip::showText(ui->texteditProposalDescription->mapToGlobal(QPoint()), tr("Only 1000 symbols allowed for description yet. Please use additional recource, if required."));
+        QToolTip::showText(ui->texteditProposalDescription->mapToGlobal(QPoint()), tr("Only 1000 symbols allowed for description. Please use additional recource, if required."));
         ui->texteditProposalDescription->setText(ui->texteditProposalDescription->toPlainText().left(1000));
         //ui->texteditProposalDescription->setCursorPosition(1000);
         ui->texteditProposalDescription->setTextCursor( cursor );
