@@ -3,9 +3,6 @@
 todo.txt
 reset-files.bash
 
-*.creator.user
-*.creator
-
 *.tar.gz
 
 *.exe
@@ -125,6 +122,9 @@ share/BitcoindComparisonTool.jar
 .project
 .autotools
 /doc/doxygen/
+.creator.user
+.creator
+.includes
 
 libaywaconsensus.pc
 src/qt/aywa-qt.bash
