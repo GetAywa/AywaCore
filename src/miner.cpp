@@ -56,6 +56,9 @@ double GetCurrentHashRate(){
     return current_hashrate*mining_threads_count;
 }
 
+int GetMiningThreadsCount(){
+    return mining_threads_count;
+}
 
 class ScoreCompare
 {
@@ -465,7 +468,7 @@ void static BitcoinMiner(const CChainParams& chainparams, CConnman& connman)
             int64_t nStart = GetTime();
             arith_uint256 hashTarget = arith_uint256().SetCompact(pblock->nBits);
 
-            int64_t nStartMeasureHashTime = nStart, nEndMeasureHashTime;
+            int64_t nStartMeasureHashTime = nStart;//, nEndMeasureHashTime;
             double nHashRate = 0; uint32_t nLastNonce=1;
 
             while (true)
@@ -498,11 +501,11 @@ void static BitcoinMiner(const CChainParams& chainparams, CConnman& connman)
                     nHashesDone += 1;
 
                     if (GetTime() - nStartMeasureHashTime >= 10){
-                        nEndMeasureHashTime = GetTime();
+                        //nEndMeasureHashTime = GetTime();
                         nHashRate = (pblock->nNonce-nLastNonce)/10;
 
-                        std::cout << "BlockHeight:" << pindexPrev->nHeight << "   LastNonce:"
-                                  << nLastNonce <<"   HashRate: " << nHashRate << "Tread:"<< GetThreadName() <<"\n";
+                        //std::cout << "BlockHeight:" << pindexPrev->nHeight << "   LastNonce:"
+                        //          << nLastNonce <<"   HashRate: " << nHashRate << "Tread:"<< GetThreadName() <<"\n";
                         current_hashrate = nHashRate;
                         nLastNonce = pblock->nNonce;
                         nStartMeasureHashTime = GetTime();

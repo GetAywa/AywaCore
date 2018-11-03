@@ -26,6 +26,8 @@
 
 #include "rpc/server.h"
 
+#include "miner.h"
+
 #include <QAbstractItemDelegate>
 #include <QPainter>
 #include <QSettings>
@@ -33,8 +35,8 @@
 
 #define ICON_OFFSET 16
 #define DECORATION_SIZE 54
-#define NUM_ITEMS 5
-#define NUM_ITEMS_ADV 7
+#define NUM_ITEMS 6
+#define NUM_ITEMS_ADV 8
 
 class TxViewDelegate : public QAbstractItemDelegate
 {
@@ -182,9 +184,15 @@ OverviewPage::OverviewPage(const PlatformStyle *platformStyle, QWidget *parent) 
 
         timer = new QTimer(this);
         connect(timer, SIGNAL(timeout()), this, SLOT(privateSendStatus()));
+
+        connect(timer, SIGNAL(timeout()), this, SLOT(updateMiningInfo()));
+
         timer->start(1000);
     }
     ui->bnGenerate->setText((GetBoolArg("-gen", false) ? "Stop Mining" :"Start Mining"));
+
+    ui->labelAvailableCores->setText(QString::number(GetNumCores()));
+    updateMiningInfo();
 
 }
 
@@ -682,22 +690,42 @@ void OverviewPage::DisablePrivateSendCompletely() {
     privateSendClient.fEnablePrivateSend = false;
 }
 
-void OverviewPage::on_bnGenerate_clicked()
+void OverviewPage::on_bnGenerate_clicked() //toggle mining
 {
     toggleGenerate();
 }
 
-void OverviewPage::toggleGenerate(bool checkStatusOnly)//just check status and update labels if false
+void OverviewPage::toggleGenerate(bool fKeepCurrentGenerateStatus)
 {
+    bool fMiningEnabled = GetBoolArg("-gen", false);
     UniValue params (UniValue::VARR);
     UniValue uCurrentGenerateSetting (UniValue::VBOOL);
-    uCurrentGenerateSetting.setBool(!GetBoolArg("-gen", false) ? true:false);
+
+    uCurrentGenerateSetting.setBool(fKeepCurrentGenerateStatus ? fMiningEnabled : !fMiningEnabled);// ? true:false);
                                     //getgenerate(params, false).getBool());
                                     //GetBoolArg("-gen", false) ? true:false);
     params.push_back(uCurrentGenerateSetting);
-    if (!checkStatusOnly)
-        setgenerate(params, false);
+    params.push_back(ui->spinBoxMiningThreads->value());
+    setgenerate(params, false);
     params.clear();
-    ui->bnGenerate->setText((GetBoolArg("-gen", false) ? "Stop Mining" :"Start Mining"));
+}
 
+void OverviewPage::updateMiningInfo()
+{
+    bool fMiningEnabled = GetBoolArg("-gen", false);
+    if (!fMiningEnabled){
+        ui->bnGenerate->setText(tr("Start Mining"));
+        ui->labelTotalHashRate->setText("0");
+        return;
+    }
+
+    ui->bnGenerate->setText(tr("Stop Mining"));
+    ui->labelTotalHashRate->setText(QString::number(GetCurrentHashRate()));
+}
+
+void OverviewPage::on_spinBoxMiningThreads_valueChanged(int arg1)
+{
+    if (!(GetBoolArg("-gen", false)))
+        return;
+    toggleGenerate(true);
 }

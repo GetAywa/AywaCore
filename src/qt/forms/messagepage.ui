@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>719</width>
-    <height>528</height>
+    <height>567</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -223,7 +223,7 @@
                  <string>Send message (Enter)</string>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="../aywa.qrc">
                   <normaloff>:/icons/light/tx_output</normaloff>:/icons/light/tx_output</iconset>
                 </property>
                 <property name="iconSize">
@@ -246,7 +246,7 @@
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,0">
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,0,0">
      <property name="spacing">
       <number>6</number>
      </property>
@@ -258,6 +258,13 @@
        <property name="icon">
         <iconset>
          <normaloff>:/icons/add</normaloff>:/icons/add</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton">
+       <property name="text">
+        <string>Update contacts</string>
        </property>
       </widget>
      </item>
@@ -294,6 +301,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../aywa.qrc"/>
+ </resources>
  <connections/>
 </ui>
