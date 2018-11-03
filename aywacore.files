@@ -1,3 +1,9 @@
+contrib/seeds/README.md
+contrib/seeds/generate-seeds.py
+contrib/seeds/makeseeds.py
+contrib/seeds/nodes_main.txt
+contrib/seeds/nodes_test.txt
+contrib/seeds/seeds_main.txt
 src/activemasternode.cpp
 src/activemasternode.h
 src/addrdb.cpp

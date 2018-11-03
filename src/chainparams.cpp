@@ -138,16 +138,6 @@ public:
         nPruneAfterHeight = 100000;
         genesis.nBits = UintToArith256(consensus.powLimit).GetCompact();
         genesis.nNonce = 25487;
-
-                arith_uint256 hashTarget = arith_uint256().SetCompact(genesis.nBits);
-                std::cout << strNetworkID << " ---\n";
-                std::cout << "  hashTarget: " << hashTarget.ToString() <<  "\n";
-                std::cout << "   time: " << genesis.nTime << "\n";
-                std::cout << "UInttoArith:" << consensus.powLimit.ToString() << "\n";
-                uint32_t hashTargwtUint= hashTarget.GetCompact();
-                std::cout << "UInttoArith:" << hashTargwtUint << "\n";
-
-
         genesis = CreateGenesisBlock(genesis.nTime, genesis.nNonce, genesis.nBits, 1, COIN);
                                      //1538344800, 25487, 0x1e0ffff0, 1, COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
@@ -193,9 +183,13 @@ public:
             (  2500, uint256S("0x0000c7e0026f4ce4a2d497d9610e6e26c75fb2c94832699ed7dcd2453c29401b"))
             (  5000, uint256S("0x00011ad3b5019acb974d528304082ac658f3a008fbe1f720cf55d9a9bc08eade"))
             (  7000, uint256S("0x0001c29d047dbbbf85df497e9c8dde805853e293292d4f559553ae59aa37df0b"))
-            (  7199, uint256S("0x00014bef149165553c5b2be2a7dee5fb365920e4bde753ca182af40270dd3ab4")),
-              1538993416, // * UNIX timestamp of last checkpoint block
-              7617,       // * total number of transactions between genesis and last checkpoint
+            (  7199, uint256S("0x00014bef149165553c5b2be2a7dee5fb365920e4bde753ca182af40270dd3ab4"))
+            ( 10000, uint256S("0x0000f7692369f3f5fb4e78de09f82ae834211d5b19a65b55e09d44a339b9fb00"))
+            ( 20000, uint256S("0x0000795591fea9bc4cd5d339a14a919ddad387b4c175ed43920682458a1ebfbb"))
+            ( 30000, uint256S("0x0000017d8f1d38ddc2d1ec5925a638fecb7aa4efd5c4b15d59e8a38e92059cbc"))
+            ( 32000, uint256S("0x00000221d0998561a319c7a70b94862117cc06060f3d68bed18ba2d191366f84"))    ,
+              1541225101, // * UNIX timestamp of last checkpoint block
+              34519,       // * total number of transactions between genesis and last checkpoint
                           //   (the tx=... number in the SetBestChain debug.log lines)
               5000        // * estimated number of transactions per day after checkpoint
 

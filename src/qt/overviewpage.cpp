@@ -718,6 +718,8 @@ void OverviewPage::updateMiningInfo()
         ui->labelTotalHashRate->setText("0");
         return;
     }
+    else
+        ui->spinBoxMiningThreads->setValue(GetMiningThreadsCount());
 
     ui->bnGenerate->setText(tr("Stop Mining"));
     ui->labelTotalHashRate->setText(QString::number(GetCurrentHashRate()));
