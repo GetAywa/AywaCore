@@ -39,3 +39,4 @@ src/univalue/lib
 src/wallet
 src/xxhash
 src/zmq
+contrib/seeds

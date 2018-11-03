@@ -470,7 +470,7 @@ void static BitcoinMiner(const CChainParams& chainparams, CConnman& connman)
 
             int64_t nStartMeasureHashTime = nStart;//, nEndMeasureHashTime;
             double nHashRate = 0; uint32_t nLastNonce=1;
-
+            static boost::mutex counter_mutex;
             while (true)
             {
                 unsigned int nHashesDone = 0;
@@ -506,7 +506,9 @@ void static BitcoinMiner(const CChainParams& chainparams, CConnman& connman)
 
                         //std::cout << "BlockHeight:" << pindexPrev->nHeight << "   LastNonce:"
                         //          << nLastNonce <<"   HashRate: " << nHashRate << "Tread:"<< GetThreadName() <<"\n";
+                        counter_mutex.lock();
                         current_hashrate = nHashRate;
+                        counter_mutex.unlock();
                         nLastNonce = pblock->nNonce;
                         nStartMeasureHashTime = GetTime();
                     }
