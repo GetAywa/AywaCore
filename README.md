@@ -7,7 +7,7 @@ More information is on our page: www.getaywa.org.
 
 If required information was not found you can ask questions at the AywaCore built-in messanger. 
 
-The source code is availible on BitBucket: https://bitbucket.org/CryptoDev_Space/aywacore/
+The **source code** is availible on BitBucket: https://bitbucket.org/CryptoDev_Space/aywacore/
 
 ## [AywaCore Download](https://github.com/GetAywa/AywaCore/releases)
 
