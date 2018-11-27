@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>743</width>
-    <height>457</height>
+    <width>814</width>
+    <height>461</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -32,22 +32,9 @@
       <number>0</number>
      </property>
      <item>
-      <spacer name="horizontalSpacer0">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
       <widget class="QTabWidget" name="tabWidget">
        <property name="currentIndex">
-        <number>0</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="tabAllMasternodes">
         <attribute name="title">
@@ -300,7 +287,215 @@ if your masternode should be running but you still do not see &quot;ENABLED&quot
          <string>Proposals</string>
         </attribute>
         <layout class="QGridLayout" name="gridLayout">
-         <item row="2" column="0" rowspan="3">
+         <item row="1" column="0">
+          <layout class="QHBoxLayout" name="horizontalLayout_5">
+           <property name="spacing">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QTableWidget" name="tableWidgetProposals">
+             <property name="editTriggers">
+              <set>QAbstractItemView::DoubleClicked</set>
+             </property>
+             <property name="alternatingRowColors">
+              <bool>true</bool>
+             </property>
+             <property name="selectionBehavior">
+              <enum>QAbstractItemView::SelectRows</enum>
+             </property>
+             <property name="sortingEnabled">
+              <bool>true</bool>
+             </property>
+             <attribute name="horizontalHeaderStretchLastSection">
+              <bool>true</bool>
+             </attribute>
+             <column>
+              <property name="text">
+               <string>Title</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Created</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Abs. Yes Votes</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Address</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Amount</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Start Payments</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Period</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>End Payments</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Proposal Hash</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>TX Hash</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Vote</string>
+              </property>
+             </column>
+            </widget>
+           </item>
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_3">
+             <property name="spacing">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <layout class="QGridLayout" name="gridLayout_2">
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <item row="0" column="1">
+                <widget class="QLabel" name="label_2">
+                 <property name="text">
+                  <string>1000 AYWA for XX days</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="labelProposalName">
+                 <property name="font">
+                  <font>
+                   <pointsize>12</pointsize>
+                   <weight>75</weight>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>PROPOSAL_NAME (DD/MM/YYYY)</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QLabel" name="label_4">
+                 <property name="text">
+                  <string>from 01/01/2018</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLineEdit" name="ProposalHash_lineedit">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
+                 <property name="placeholderText">
+                  <string>Proposal hash</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QTextEdit" name="ProposalDescription_plainTextEdit">
+               <property name="html">
+                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.SF NS Text'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Selected Proposal Description &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QListView" name="listView"/>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_6">
+               <property name="spacing">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QLineEdit" name="lineEdit">
+                 <property name="placeholderText">
+                  <string>Type your text here. Press Enter to send.</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QToolButton" name="toolButton">
+                 <property name="text">
+                  <string>⏎</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_8">
+               <property name="spacing">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QPushButton" name="pushButton">
+                 <property name="text">
+                  <string>✅YES👍</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton_2">
+                 <property name="text">
+                  <string>❌NO👎</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton_4">
+                 <property name="text">
+                  <string>🚫Abstain</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </item>
+         <item row="3" column="0" rowspan="3">
           <layout class="QHBoxLayout" name="horizontalLayout_4">
            <property name="leftMargin">
             <number>0</number>
@@ -351,91 +546,22 @@ if your masternode should be running but you still do not see &quot;ENABLED&quot
            </item>
           </layout>
          </item>
-         <item row="1" column="0">
-          <widget class="QTableWidget" name="tableWidgetProposals">
-           <property name="editTriggers">
-            <set>QAbstractItemView::DoubleClicked</set>
-           </property>
-           <property name="alternatingRowColors">
-            <bool>true</bool>
-           </property>
-           <property name="selectionBehavior">
-            <enum>QAbstractItemView::SelectRows</enum>
-           </property>
-           <property name="sortingEnabled">
-            <bool>true</bool>
-           </property>
-           <attribute name="horizontalHeaderStretchLastSection">
-            <bool>true</bool>
-           </attribute>
-           <column>
-            <property name="text">
-             <string>Title</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Created</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Address</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Amount</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Start Payments</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Period</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>End Payments</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Proposal Hash</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>TX Hash</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Vote</string>
-            </property>
-           </column>
-          </widget>
-         </item>
          <item row="0" column="0">
-          <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <layout class="QHBoxLayout" name="horizontalLayout_31">
            <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_filter">
+            <widget class="QLabel" name="label_filter1">
              <property name="text">
               <string>Filter List:</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="filterLineEdit">
+            <widget class="QLineEdit" name="filterProposalLineEdit">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="toolTip">
               <string>Filter masternode list</string>
@@ -443,12 +569,9 @@ if your masternode should be running but you still do not see &quot;ENABLED&quot
             </widget>
            </item>
            <item>
-            <widget class="QCheckBox" name="checkBox_2">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
+            <widget class="QCheckBox" name="checkboxProposaslToVote">
              <property name="text">
-              <string>Show All Proposals</string>
+              <string>Vote required</string>
              </property>
              <property name="checked">
               <bool>true</bool>
@@ -456,9 +579,12 @@ if your masternode should be running but you still do not see &quot;ENABLED&quot
             </widget>
            </item>
            <item>
-            <widget class="QCheckBox" name="checkboxProposaslToVote">
+            <widget class="QCheckBox" name="cbActiveOnly">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
              <property name="text">
-              <string>Proposals To Vote</string>
+              <string>Active Only</string>
              </property>
              <property name="checked">
               <bool>true</bool>
@@ -479,7 +605,7 @@ if your masternode should be running but you still do not see &quot;ENABLED&quot
             </spacer>
            </item>
            <item>
-            <widget class="QLabel" name="label_count">
+            <widget class="QLabel" name="label_count1">
              <property name="text">
               <string>Proposal Count:</string>
              </property>
@@ -497,6 +623,19 @@ if your masternode should be running but you still do not see &quot;ENABLED&quot
         </layout>
        </widget>
       </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer0">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
      </item>
     </layout>
    </item>

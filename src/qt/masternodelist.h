@@ -47,6 +47,7 @@ private:
     QMenu *contextMenu, *contextMenuProposalsTab;
     int64_t nTimeFilterUpdated;
     bool fFilterUpdated;
+    bool fFilterProposalUpdated;
 
 public Q_SLOTS:
     void updateMyMasternodeInfo(QString strAlias, QString strAddr, const COutPoint& outpoint);
@@ -76,11 +77,13 @@ private:
     CCriticalSection cs_gobjectslist;
 
     QString strCurrentFilter;
+    QString strCurrentProposalFilter;
 
 private Q_SLOTS:
     void showContextMenu(const QPoint &);
     void showContextMenuProposalTab(const QPoint &);
     void on_filterLineEdit_textChanged(const QString &strFilterIn);
+    void on_filterProposalLineEdit_textChanged(const QString &strFilterIn);
     void voteYesAction();
     void voteNoActionSLOT();
     void voteAbstainActionSLOT();
@@ -96,5 +99,8 @@ private Q_SLOTS:
     void on_buttonNewProposal_clicked();
     void on_checkboxProposaslToVote_stateChanged(int arg1);
     void on_tableWidgetProposals_itemDoubleClicked();//QTableWidgetItem *item);
+    void on_cbActiveOnly_stateChanged(int arg1);
+    void on_tableWidgetProposals_itemActivated();
+    void on_tableWidgetProposals_itemSelectionChanged();
 };
 #endif // MASTERNODELIST_H

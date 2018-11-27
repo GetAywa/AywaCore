@@ -28,7 +28,9 @@
 #include <QMessageBox>
 
 int nFilterVoteRequiredOnly=1;
+int nFilterActiveOnly = 1;
 int nProposalCount=0;
+int GetNextSuperblockTime();
 
 int GetOffsetFromUtc()
 {
@@ -514,6 +516,8 @@ void MasternodeList::updateProposalList(bool fForceUpdate)
         uint256 hash = pGovObj->GetHash();
         COutPoint mnCollateralOutpoint;
 
+        int nAbsoluteYesVoteCount = pGovObj->GetAbsoluteYesCount(VOTE_SIGNAL_FUNDING);
+
         BOOST_FOREACH(CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
             int32_t vout = boost::lexical_cast<uint32_t>(mne.getOutputIndex());
             uint256 txid = uint256S(mne.getTxHash());
@@ -554,6 +558,11 @@ void MasternodeList::updateProposalList(bool fForceUpdate)
 
         if (!strMyVote.empty() && nFilterVoteRequiredOnly) continue;
 
+        //if (nFilterActiveOnly && (nEnd_epoch-Params().GetConsensus().nBudgetPaymentsCycleBlocks/2 > GetNextSuperblockTime())) continue;
+        if (nFilterActiveOnly && (GetNextSuperblockTime()-nEnd_epoch)>0) continue;
+
+
+
         QTableWidgetItem *proposalNameItem = new QTableWidgetItem(QString::fromStdString(strName));
         QTableWidgetItem *hashItem = new QTableWidgetItem(QString::fromStdString(pGovObj->GetHash().ToString()));
 
@@ -569,7 +578,7 @@ void MasternodeList::updateProposalList(bool fForceUpdate)
         QTableWidgetItem *paymentAddressItem = new QTableWidgetItem(QString::fromStdString(strPayment_address));
         QTableWidgetItem *voteSignalItem = new QTableWidgetItem(QString::fromStdString(strMyVote));
 
-
+        QTableWidgetItem *absoluteYesVotes = new QTableWidgetItem(QString::number((nAbsoluteYesVoteCount),10));
 
 //        if (strCurrentFilter != "")
 //        {
@@ -587,15 +596,16 @@ void MasternodeList::updateProposalList(bool fForceUpdate)
         CBitcoinAddress paymentAddress(strPayment_address);
         ui->tableWidgetProposals->setItem(0, 0, proposalNameItem);
         ui->tableWidgetProposals->setItem(0, 1, creationTimeItem);
-        ui->tableWidgetProposals->setItem(0, 2, paymentAddressItem);
-        ui->tableWidgetProposals->setItem(0, 3, paymentAmountItem);
-        ui->tableWidgetProposals->setItem(0, 4, startEpochItem);
-        ui->tableWidgetProposals->setItem(0, 5, lenghtEpochItem);
-        ui->tableWidgetProposals->setItem(0, 6, endEpochItem);
+        ui->tableWidgetProposals->setItem(0, 2, absoluteYesVotes);
+        ui->tableWidgetProposals->setItem(0, 3, paymentAddressItem);
+        ui->tableWidgetProposals->setItem(0, 4, paymentAmountItem);
+        ui->tableWidgetProposals->setItem(0, 5, startEpochItem);
+        ui->tableWidgetProposals->setItem(0, 6, lenghtEpochItem);
+        ui->tableWidgetProposals->setItem(0, 7, endEpochItem);
 
-        ui->tableWidgetProposals->setItem(0, 7, hashItem);
-        ui->tableWidgetProposals->setItem(0, 8, collateralHashItem);
-        ui->tableWidgetProposals->setItem(0, 9, voteSignalItem);
+        ui->tableWidgetProposals->setItem(0, 8, hashItem);
+        ui->tableWidgetProposals->setItem(0, 9, collateralHashItem);
+        ui->tableWidgetProposals->setItem(0, 10, voteSignalItem);
 
         if (IsMine(*pwalletMain, paymentAddress.Get()))
         {
@@ -627,6 +637,16 @@ void MasternodeList::on_filterLineEdit_textChanged(const QString &strFilterIn)
     ui->countLabel->setText(QString::fromStdString(strprintf("Please wait... %d", MASTERNODELIST_FILTER_COOLDOWN_SECONDS)));
 }
 
+
+void MasternodeList::on_filterProposalLineEdit_textChanged(const QString &strFilterIn)
+{
+    strCurrentProposalFilter = strFilterIn;
+    nTimeFilterUpdated = GetTime();
+    fFilterProposalUpdated = true;
+    ui->countLabel->setText(QString::fromStdString(strprintf("Please wait... %d", MASTERNODELIST_FILTER_COOLDOWN_SECONDS)));
+}
+
+
 void MasternodeList::showDetailsActionSLOT()
 {
     std::string strProposalHash;
@@ -640,7 +660,7 @@ void MasternodeList::showDetailsActionSLOT()
 
         QModelIndex index = selected.at(0);
         int nSelectedRow = index.row();
-        strProposalHash = ui->tableWidgetProposals->item(nSelectedRow, 7)->text().toStdString();
+        strProposalHash = ui->tableWidgetProposals->item(nSelectedRow, 8)->text().toStdString();
         NewProposalDialog* dlg_NewProposalDialog = new NewProposalDialog(strProposalHash);//strProposalHash);//selection.at(0));
         dlg_NewProposalDialog->setWalletModel(walletModel);
         dlg_NewProposalDialog->showNormal();
@@ -799,4 +819,127 @@ void MasternodeList::on_checkboxProposaslToVote_stateChanged(int arg1)
 void MasternodeList::on_tableWidgetProposals_itemDoubleClicked()//QTableWidgetItem *item)
 {
     showDetailsActionSLOT();
+}
+
+int GetNextSuperblockTime()
+{
+    //return 0;
+    // Compute last/next superblock
+    int nLastSuperblock, nNextSuperblock;
+
+    // Get current block height
+    int nBlockHeight = 0;
+    {
+        LOCK(cs_main);
+        nBlockHeight = (int)chainActive.Height();
+    }
+   // getgovernanceinfo();
+
+    // Get chain parameters
+    int nSuperblockStartBlock = Params().GetConsensus().nSuperblockStartBlock;
+    int nSuperblockCycle = Params().GetConsensus().nSuperblockCycle;
+
+    // Get first superblock
+    int nFirstSuperblockOffset = (nSuperblockCycle - nSuperblockStartBlock % nSuperblockCycle) % nSuperblockCycle;
+    int nFirstSuperblock = nSuperblockStartBlock + nFirstSuperblockOffset;
+
+    if(nBlockHeight < nFirstSuperblock){
+        nLastSuperblock = 0;
+        nNextSuperblock = nFirstSuperblock;
+    } else {
+        nLastSuperblock = nBlockHeight - nBlockHeight % nSuperblockCycle;
+        nNextSuperblock = nLastSuperblock + nSuperblockCycle;
+    }
+
+
+    return nNextSuperblock*Params().GetConsensus().nPowTargetSpacing
+            +chainActive.Genesis()->GetBlockTime();
+
+}
+
+void MasternodeList::on_cbActiveOnly_stateChanged(int arg1)
+{
+    nFilterActiveOnly = arg1;
+    updateProposalList(true);
+}
+
+void MasternodeList::on_tableWidgetProposals_itemActivated()
+{
+}
+
+void MasternodeList::on_tableWidgetProposals_itemSelectionChanged()
+{
+    std::string strProposalHash;
+    {
+        LOCK(cs_gobjectslist);
+        // Find selected proposal hash
+        QItemSelectionModel* selectionModel = ui->tableWidgetProposals->selectionModel();
+        QModelIndexList selected = selectionModel->selectedRows();
+
+        if(selected.count() == 0) return;
+
+        QModelIndex index = selected.at(0);
+        int nSelectedRow = index.row();
+        strProposalHash = ui->tableWidgetProposals->item(nSelectedRow, 8)->text().toStdString();
+        ui->ProposalHash_lineedit->setText(strProposalHash.c_str());
+        uint256 hash = uint256S(strProposalHash);
+        CGovernanceObject* pGovObj = governance.FindGovernanceObject(hash);
+
+        if (!pGovObj) return; //only GOVERNANCE_OBJECT_PROPOSAL can be opened
+        UniValue objJSON = pGovObj->GetJSONObject();
+        std::string strName = objJSON["name"].get_str();
+        //std::string strWindowTitle = "Aywa Core - Proposal "+strName;
+        int nEnd_epoch = objJSON["end_epoch"].get_int();
+        //std::string strPayment_address = objJSON["payment_address"].get_str();
+        int nPayment_amount = objJSON["payment_amount"].get_int();
+        int nStart_epoch = objJSON["start_epoch"].get_int();
+        std::string strUrl = objJSON["url"].get_str();
+        std::string strProposalChannelAddress, strProposalChannelPrivKey, strProposalChannelPubKey;
+        try{//some proposals dont have a description
+            strProposalChannelAddress = objJSON["smsg_addr"].get_str();
+            strProposalChannelPubKey = objJSON["smsg_pubkey"].get_str();
+            strProposalChannelPrivKey = objJSON["smsg_privkey"].get_str();
+            std::string strDescription = objJSON["description"].get_str();
+            std::vector<unsigned char> v = ParseHex(strDescription);
+            std::string strProposalDescription(v.begin(), v.end());
+            ui->ProposalDescription_plainTextEdit->setHtml(strProposalDescription.c_str());
+        }
+        catch(std::exception& e)
+        {
+            ui->ProposalDescription_plainTextEdit->setPlainText(e.what());
+        };
+
+        ui->labelProposalName->setText(strName.c_str());
+        //ui->labelProposalName->setReadOnly(true);
+
+        ui->ProposalDescription_plainTextEdit->setReadOnly(true);
+        //ui->ProposalDescription_plainTextEdit->setText(strPayment_address.c_str());
+        //ui->lineeditPaymentAddress->setReadOnly(true);
+        //ui->dateeditPaymentStartDate->setDateTime(QDateTime::fromTime_t(nStart_epoch+43200));// + Params().GetConsensus().nBudgetPaymentsCycleBlocks * Params().GetConsensus().nPowTargetSpacing / 2));
+        //ui->dateeditPaymentStartDate->setEnabled(false);
+        //ui->dateeditPaymentEndDate->setDateTime(QDateTime::fromTime_t(nEnd_epoch-43200));// - Params().GetConsensus().nBudgetPaymentsCycleBlocks * Params().GetConsensus().nPowTargetSpacing / 2));
+        //ui->dateeditPaymentEndDate->setEnabled(false);
+        //ui->spinboxAmount->setValue(nPayment_amount);
+        //ui->spinboxAmount->setEnabled(false);
+        //const Consensus::Params& consensusParams = Params().GetConsensus();
+        //const int nBudgetPaymentsCycleBlocks = consensusParams.nBudgetPaymentsCycleBlocks;
+        //ui->spinboxPeriod->setValue((nEnd_epoch - nStart_epoch)/86400);
+
+        //ui->spinboxPeriod->setEnabled(false);
+
+        //ui->lineeditProposalUrl->setText(strUrl.c_str());
+        //ui->lineeditProposalUrl->setReadOnly(true);
+
+        //ui->lineeditPrivateChatAddress->setText(strProposalChannelAddress.c_str());
+        //ui->lineeditPrivateChatPubKey->setText(strProposalChannelPubKey.c_str());
+        //ui->lineeditChannelPrivKey->setText(strProposalChannelPrivKey.c_str());
+
+        //ui->bnJoinChannel->setEnabled(!GetIsChannelSubscribed(ui->lineeditPrivateChatAddress->text().toStdString()));
+
+        //ui->lineeditPrivateChatAddress->setReadOnly(true);
+        //ui->pushbuttonCheck->setEnabled(false);
+        //ui->toolbuttonSelectPaymentAddress->setEnabled(false);
+    }
+
+
 }
