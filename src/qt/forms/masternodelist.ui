@@ -290,7 +290,7 @@ if your masternode should be running but you still do not see &quot;ENABLED&quot
          <item row="1" column="0">
           <layout class="QHBoxLayout" name="horizontalLayout_5">
            <property name="spacing">
-            <number>0</number>
+            <number>-1</number>
            </property>
            <property name="topMargin">
             <number>0</number>
@@ -592,7 +592,7 @@ p, li { white-space: pre-wrap; }
             </widget>
            </item>
            <item>
-            <spacer name="horizontalSpacer_3">
+            <spacer name="horizontalSpacer_31">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
              </property>

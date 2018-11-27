@@ -20,6 +20,8 @@ namespace Ui {
     class MasternodeList;
 }
 
+
+
 class ClientModel;
 class WalletModel;
 //class RPCExecutor;

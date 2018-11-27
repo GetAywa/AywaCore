@@ -578,7 +578,7 @@ void MasternodeList::updateProposalList(bool fForceUpdate)
         QTableWidgetItem *paymentAddressItem = new QTableWidgetItem(QString::fromStdString(strPayment_address));
         QTableWidgetItem *voteSignalItem = new QTableWidgetItem(QString::fromStdString(strMyVote));
 
-        QTableWidgetItem *absoluteYesVotes = new QTableWidgetItem(QString::number((nAbsoluteYesVoteCount),10));
+        QTableWidgetItem *absoluteYesVotes = new QTableWidgetItem(QString::number((nAbsoluteYesVoteCount)));
 
 //        if (strCurrentFilter != "")
 //        {
@@ -615,7 +615,13 @@ void MasternodeList::updateProposalList(bool fForceUpdate)
             ui->tableWidgetProposals->item(0,0)->setFont(font);
             //ui->tableWidgetProposals->item(0,2)->setBackground(QColor::fromRgb(255,0,0));
         }
+
+        if (nAbsoluteYesVoteCount>-50)
+            ui->tableWidgetProposals->item(0,2)->setBackground(QColor::fromRgb(0,200,200));
     }
+
+
+
     //new proposal notify if voting power//TODO
     //if (masternodeConfig.getCount()>0)
 
@@ -821,7 +827,7 @@ void MasternodeList::on_tableWidgetProposals_itemDoubleClicked()//QTableWidgetIt
     showDetailsActionSLOT();
 }
 
-int GetNextSuperblockTime()
+int GetSuperblockTime()
 {
     //return 0;
     // Compute last/next superblock
@@ -939,6 +945,9 @@ void MasternodeList::on_tableWidgetProposals_itemSelectionChanged()
         //ui->lineeditPrivateChatAddress->setReadOnly(true);
         //ui->pushbuttonCheck->setEnabled(false);
         //ui->toolbuttonSelectPaymentAddress->setEnabled(false);
+
+
+
     }
 
 
