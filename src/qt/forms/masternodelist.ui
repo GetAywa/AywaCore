@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>814</width>
-    <height>461</height>
+    <height>473</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -521,7 +521,79 @@ if your masternode should be running but you still do not see &quot;ENABLED&quot
                <property name="topMargin">
                 <number>0</number>
                </property>
+               <item row="0" column="0">
+                <widget class="QLabel" name="labelProposalName">
+                 <property name="font">
+                  <font>
+                   <pointsize>12</pointsize>
+                   <weight>75</weight>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>&lt;SELECTED PROPOSAL_NAME (DD/MM/YYYY)&gt;</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QLabel" name="labelProposalFromToDate">
+                 <property name="text">
+                  <string>DD/MM/YYYY - DD/MM/YYYY</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QLabel" name="labelProposalAmountAndDays">
+                 <property name="text">
+                  <string>&lt;...&gt; AYWA for &lt;...&gt; day(s)</string>
+                 </property>
+                </widget>
+               </item>
                <item row="1" column="0">
+                <widget class="QLabel" name="labelTotalProposalBudget">
+                 <property name="font">
+                  <font>
+                   <weight>75</weight>
+                   <bold>true</bold>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Total: &lt;...&gt;AYWA</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QTextEdit" name="ProposalDescription_plainTextEdit">
+               <property name="html">
+                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.SF NS Text'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&amp;lt;selected proposal description &amp;gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_7">
+               <property name="topMargin">
+                <number>5</number>
+               </property>
+               <property name="bottomMargin">
+                <number>5</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="label">
+                 <property name="text">
+                  <string>Hash:</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
                 <widget class="QLineEdit" name="ProposalHash_lineedit">
                  <property name="enabled">
                   <bool>true</bool>
@@ -543,49 +615,14 @@ if your masternode should be running but you still do not see &quot;ENABLED&quot
                  </property>
                 </widget>
                </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="labelProposalName">
-                 <property name="font">
-                  <font>
-                   <pointsize>12</pointsize>
-                   <weight>75</weight>
-                   <bold>true</bold>
-                  </font>
-                 </property>
-                 <property name="text">
-                  <string>PROPOSAL_NAME (DD/MM/YYYY)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="1">
-                <widget class="QLabel" name="labelProposalFromToDate">
-                 <property name="text">
-                  <string>01/01/2018-31/12/2019</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="1">
-                <widget class="QLabel" name="labelProposalAmountAndDays">
-                 <property name="text">
-                  <string>1000 AYWA for XX days</string>
-                 </property>
-                </widget>
-               </item>
               </layout>
              </item>
              <item>
-              <widget class="QTextEdit" name="ProposalDescription_plainTextEdit">
-               <property name="html">
-                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.SF NS Text'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Selected Proposal Description &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <widget class="QListView" name="listViewConversation">
+               <property name="toolTipDuration">
+                <number>7</number>
                </property>
               </widget>
-             </item>
-             <item>
-              <widget class="QListView" name="listView"/>
              </item>
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_6">
@@ -622,21 +659,21 @@ p, li { white-space: pre-wrap; }
                <item>
                 <widget class="QPushButton" name="bnVoteYes">
                  <property name="text">
-                  <string>✅YES👍</string>
+                  <string>✅ YES👍</string>
                  </property>
                 </widget>
                </item>
                <item>
                 <widget class="QPushButton" name="bnVoteNo">
                  <property name="text">
-                  <string>❌NO👎</string>
+                  <string>⛔️ NO👎</string>
                  </property>
                 </widget>
                </item>
                <item>
                 <widget class="QPushButton" name="bnVoteAbstain">
                  <property name="text">
-                  <string>🚫Abstain</string>
+                  <string>Abstain 😐</string>
                  </property>
                 </widget>
                </item>

@@ -55,10 +55,10 @@ void MessageViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &o
     QString html;
     html = "<hr align=\"left\" width=\"100%\">";
     html += "<p align=\"" + align + "\" style=\""+ background_color + "; margin-top:10px; "
-            +margin_left+margin_right+"margin-bottom:10px\">" + index.data(MessageModel::ShortMessageRole).toString() + "</p>";
-    html += "<p align=\"" + align + "\" style=\"font-size:8px;"+background_color+margin_left+margin_right
+            +margin_left+margin_right+"margin-bottom:12px\">" + index.data(MessageModel::ShortMessageRole).toString() + "</p>";
+    html += "<p align=\"" + align + "\" style=\"font-size:10px;"+background_color+margin_left+margin_right
             +"margin-top:1px; margin-bottom:1px\">" + index.data(MessageModel::ReceivedDateRole).toString() + "</p>";
-    html += "<p align=\"" + align + "\" style=\"font-size:8px;"+background_color+margin_left+margin_right
+    html += "<p align=\"" + align + "\" style=\"font-size:10px;"+background_color+margin_left+margin_right
             +"margin-top:1px; margin-bottom:1px\">" + index.data(MessageModel::LabelRole).toString() + " (";
     html += index.data(MessageModel::FromAddressRole).toString() + ")</p>";
 
@@ -677,4 +677,9 @@ void MessagePage::on_bnEmoji_clicked()
 void MessagePage::on_pushButton_clicked()
 {
    updateContactList();
+}
+
+void MessagePage::on_tableViewConversation_doubleClicked(const QModelIndex &index)
+{
+    QMessageBox::information(0, index.data(Qt::DisplayRole).toString()+" message", index.data(MessageModel::HTMLRole).toString());
 }

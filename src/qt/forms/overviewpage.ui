@@ -805,6 +805,11 @@
                 </property>
                 <item>
                  <widget class="QToolButton" name="toolButton">
+                  <property name="font">
+                   <font>
+                    <pointsize>8</pointsize>
+                   </font>
+                  </property>
                   <property name="text">
                    <string>➖</string>
                   </property>
@@ -812,11 +817,10 @@
                 </item>
                 <item>
                  <widget class="QSpinBox" name="spinBoxMiningThreads">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
+                  <property name="font">
+                   <font>
+                    <pointsize>13</pointsize>
+                   </font>
                   </property>
                   <property name="focusPolicy">
                    <enum>Qt::NoFocus</enum>
@@ -852,6 +856,11 @@
                 </item>
                 <item>
                  <widget class="QToolButton" name="toolButton_2">
+                  <property name="font">
+                   <font>
+                    <pointsize>8</pointsize>
+                   </font>
+                  </property>
                   <property name="text">
                    <string>➕</string>
                   </property>

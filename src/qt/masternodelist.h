@@ -24,10 +24,12 @@ namespace Ui {
 
 class ClientModel;
 class WalletModel;
+class MessageModel;
 //class RPCExecutor;
 
 QT_BEGIN_NAMESPACE
 class QModelIndex;
+class MessageSimpleViewDelegate;
 QT_END_NAMESPACE
 
 /** Masternode Manager page widget */
@@ -41,6 +43,7 @@ public:
 
     void setClientModel(ClientModel *clientModel);
     void setWalletModel(WalletModel *walletModel);
+    void setMessageModel(MessageModel *messageModel);
     void StartAlias(std::string strAlias);
     void StartAll(std::string strCommand = "start-all");
     void voteAction(std::string vote, std::string strProposalHash);
@@ -51,6 +54,8 @@ private:
     bool fFilterUpdated;
     bool fFilterProposalUpdated;
     int msgFontSize;
+    virtual bool eventFilter(QObject* obj, QEvent *event);
+
 
 public Q_SLOTS:
     void updateMyMasternodeInfo(QString strAlias, QString strAddr, const COutPoint& outpoint);
@@ -69,6 +74,7 @@ private:
     Ui::MasternodeList *ui;
     ClientModel *clientModel;
     WalletModel *walletModel;
+    MessageModel *messageModel;
 
     // Protects tableWidgetMasternodes
     CCriticalSection cs_mnlist;
@@ -81,6 +87,7 @@ private:
 
     QString strCurrentFilter;
     QString strCurrentProposalFilter;
+    MessageSimpleViewDelegate * msgdelegate;
 
 private Q_SLOTS:
     void showContextMenu(const QPoint &);
@@ -115,5 +122,6 @@ private Q_SLOTS:
     void on_bnVoteNo_clicked();
     void on_bnVoteAbstain_clicked();
     void on_bnSendMessage_clicked();
+    void on_listViewConversation_doubleClicked(const QModelIndex &index);
 };
 #endif // MASTERNODELIST_H

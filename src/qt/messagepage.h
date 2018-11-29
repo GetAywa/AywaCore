@@ -92,6 +92,8 @@ private Q_SLOTS:
 
     void on_pushButton_clicked();
 
+    void on_tableViewConversation_doubleClicked(const QModelIndex &index);
+
 Q_SIGNALS:
     void doubleClicked(const QModelIndex&);
 };

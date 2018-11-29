@@ -27,6 +27,10 @@
 #include <QTimer>
 #include <QMessageBox>
 #include <QSettings>
+#include <QStyledItemDelegate>
+#include <QAbstractTextDocumentLayout>
+#include <QPainter>
+#include <QToolTip>
 
 const QSize FONT_RANGE(4, 40);
 const char fontSizeSettingsKey[] = "msgFontSize";
@@ -36,6 +40,7 @@ int nFilterVoteRequiredOnly=1;
 int nFilterActiveOnly = 1;
 int nProposalCount=0;
 int GetNextSuperblockTime();
+std::string strSelectedProposalChannelAddress;
 
 int GetOffsetFromUtc()
 {
@@ -48,11 +53,80 @@ int GetOffsetFromUtc()
 #endif
 }
 
+
+class MessageSimpleViewDelegate : public QStyledItemDelegate
+{
+protected:
+    void paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+    QSize sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+};
+
+void MessageSimpleViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+    QStyleOptionViewItemV4 optionV4 = option;
+    initStyleOption(&optionV4, index);
+    QStyle *style = optionV4.widget? optionV4.widget->style() : QApplication::style();
+    QTextDocument doc;
+    QString align(index.data(MessageModel::TypeRole) < 2 ? "right" : "left");//changed 20180831
+    QString margin_left(index.data(MessageModel::TypeRole) < 2 ? "margin-left:250;" :"margin-left:0;");
+    QString margin_right(index.data(MessageModel::TypeRole) < 2 ? "margin-right:0;" :"margin-right:200;");
+    QString background_color("");
+    //QString background_color(index.data(MessageModel::UnreadFlagRole).toBool() ? "background-color:rgb(245, 245, 245);" : "");
+    QString html;
+    html = "<hr align=\"left\" width=\"100%\">";
+    html += "<p align=\"" + align + "\" style=\"font-size:8px;"+background_color+margin_left+margin_right
+            +"margin-top:1px; margin-bottom:1px\">" + index.data(MessageModel::ReceivedDateRole).toString() + "</p>";
+    html += "<p align=\"" + align + "\" style=\"font-size:8px;"+background_color+margin_left+margin_right
+            +"margin-top:1px; margin-bottom:1px\">" + index.data(MessageModel::LabelRole).toString() + " (";
+    html += index.data(MessageModel::FromAddressRole).toString() + ")</p>";
+    html += "<p align=\"" + align + "\" style=\""+ background_color + "; margin-top:10px; "
+            +margin_left+margin_right+"margin-bottom:12px\">" + index.data(MessageModel::ShortMessageRole).toString() + "</p>";
+
+
+    //QString unreadFlagTag = index.data(MessageModel::UnreadFlagRole).toBool() ? "background-color:rgb(245, 245, 245)" : "";
+
+    doc.setHtml(html);
+
+    // Painting item without text
+    optionV4.text = QString();
+    style->drawControl(QStyle::CE_ItemViewItem, &optionV4, painter);
+
+    QAbstractTextDocumentLayout::PaintContext ctx;
+
+    // Highlighting text if item is selected
+    if (optionV4.state & QStyle::State_Selected)
+        ctx.palette.setColor(QPalette::Text, optionV4.palette.color(QPalette::Active, QPalette::HighlightedText).lighter(190));
+
+
+    QRect textRect = style->subElementRect(QStyle::SE_ItemViewItemText, &optionV4);
+
+    doc.setTextWidth( textRect.width() );
+    painter->save();
+    painter->translate(textRect.topLeft());
+    painter->setClipRect(textRect.translated(-textRect.topLeft()));
+    doc.documentLayout()->draw(painter, ctx);
+    painter->restore();
+}
+
+QSize MessageSimpleViewDelegate::sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const
+{
+    QStyleOptionViewItemV4 options = option;
+    initStyleOption(&options, index);
+    QTextDocument doc;
+    doc.setHtml(index.data(MessageModel::HTMLRole).toString());
+    doc.setTextWidth(options.rect.width());
+    return QSize(doc.idealWidth(), doc.size().height()+40);//20);
+}
+
+
+
 MasternodeList::MasternodeList(const PlatformStyle *platformStyle, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::MasternodeList),
     clientModel(0),
-    walletModel(0)
+    walletModel(0),
+    messageModel(0),
+    msgdelegate (new MessageSimpleViewDelegate())
 {
     ui->setupUi(this);
 
@@ -121,6 +195,8 @@ MasternodeList::MasternodeList(const PlatformStyle *platformStyle, QWidget *pare
     nTimeFilterUpdated = GetTime();
     updateNodeList();
     updateProposalList();
+    ui->tableWidgetProposals->installEventFilter(this);
+    ui->lineeditMessage->installEventFilter(this);
 }
 
 MasternodeList::~MasternodeList()
@@ -629,8 +705,14 @@ void MasternodeList::updateProposalList(bool fForceUpdate)
             //ui->tableWidgetProposals->item(0,2)->setBackground(QColor::fromRgb(255,0,0));
         }
 
-        if (nAbsoluteYesVoteCount>-50)
+        if (nAbsoluteYesVoteCount>10){
+            ui->tableWidgetProposals->item(0,1)->setBackground(QColor::fromRgb(0,200,200));
             ui->tableWidgetProposals->item(0,2)->setBackground(QColor::fromRgb(0,200,200));
+            ui->tableWidgetProposals->item(0,3)->setBackground(QColor::fromRgb(0,200,200));
+            ui->tableWidgetProposals->item(0,4)->setBackground(QColor::fromRgb(0,200,200));
+            ui->tableWidgetProposals->item(0,5)->setBackground(QColor::fromRgb(0,200,200));
+            ui->tableWidgetProposals->item(0,6)->setBackground(QColor::fromRgb(0,200,200));
+        }
     }
 
 
@@ -888,6 +970,7 @@ void MasternodeList::on_tableWidgetProposals_itemActivated()
 
 void MasternodeList::on_tableWidgetProposals_itemSelectionChanged()
 {
+
     std::string strProposalHash;
     {
         LOCK(cs_gobjectslist);
@@ -932,12 +1015,13 @@ void MasternodeList::on_tableWidgetProposals_itemSelectionChanged()
         ui->ProposalHash_lineedit->setReadOnly(true);
         //ui->ProposalHash_lineedit->
 
-        ui->labelProposalFromToDate->setText(QString::fromStdString(DateTimeStrFormat("%Y-%m-%d", nStart_epoch)+" - "+DateTimeStrFormat("%Y-%m-%d", nEnd_epoch)));
+        ui->labelProposalFromToDate->setText(QString::fromStdString(DateTimeStrFormat("%d/%m/%Y", nStart_epoch)+" - "+DateTimeStrFormat("%d/%m/%Y", nEnd_epoch)));
 
         ui->ProposalDescription_plainTextEdit->setReadOnly(true);
 
-        ui->labelProposalAmountAndDays->setText(QString::number(nPayment_amount) + QString::fromStdString("AYWA for ") + QString::number((nEnd_epoch - nStart_epoch)/86400) + QString::fromStdString(" day(s)"));
+        ui->labelProposalAmountAndDays->setText(QString::number(nPayment_amount) + QString::fromStdString(" AYWA for ") + QString::number((nEnd_epoch - nStart_epoch)/86400) + QString::fromStdString(" day(s)"));
 
+        ui->labelTotalProposalBudget->setText(QString::fromStdString("Total budget: ") + QString::number(nPayment_amount*(nEnd_epoch - nStart_epoch)/86400) + QString::fromStdString(" AYWA"));
         //ui->ProposalDescription_plainTextEdit->setText(strPayment_address.c_str());
         //ui->lineeditPaymentAddress->setReadOnly(true);
         //ui->dateeditPaymentStartDate->setDateTime(QDateTime::fromTime_t(nStart_epoch+43200));// + Params().GetConsensus().nBudgetPaymentsCycleBlocks * Params().GetConsensus().nPowTargetSpacing / 2));
@@ -965,11 +1049,33 @@ void MasternodeList::on_tableWidgetProposals_itemSelectionChanged()
         //ui->pushbuttonCheck->setEnabled(false);
         //ui->toolbuttonSelectPaymentAddress->setEnabled(false);
 
+        if (!GetIsChannelSubscribed (strProposalChannelAddress))
+    SetChannelSubscribtion(strProposalChannelAddress, strProposalChannelPubKey,
+                           strProposalChannelPrivKey, std::string("PR-") + strName);
+        QListView * listViewConversation = ui->listViewConversation;
+        auto proxyModelSelectedContactFilter = new QSortFilterProxyModel(this);
+        proxyModelSelectedContactFilter->setSourceModel(messageModel);
+        QString filter = QString::fromStdString(strProposalChannelAddress);
+        proxyModelSelectedContactFilter->setFilterRole(false);
+        proxyModelSelectedContactFilter->setFilterFixedString("");
+        proxyModelSelectedContactFilter->sort(MessageModel::ReceivedDateTime);
+        proxyModelSelectedContactFilter->setFilterRole(MessageModel::FilterAddressRole);
+        proxyModelSelectedContactFilter->setFilterFixedString(filter);
+        listViewConversation->setItemDelegate(msgdelegate);
+        listViewConversation->setModel(proxyModelSelectedContactFilter);
+        listViewConversation->scrollToBottom();
 
+        strSelectedProposalChannelAddress = strProposalChannelAddress;
+    }
 
+    if (walletModel->getEncryptionStatus() == WalletModel::Locked || walletModel->getEncryptionStatus() == WalletModel::UnlockedForMixingOnly) {
+        //ui->lineeditProposalName->setFocus();
+        QToolTip::showText(ui->listViewConversation->mapToGlobal(QPoint()), tr("Unlock wallet to use a proposal chat."));
+        return;
     }
 
 
+    ui->lineeditMessage->setFocus();
 }
 
 
@@ -1037,6 +1143,140 @@ void MasternodeList::on_bnVoteAbstain_clicked()
 
 void MasternodeList::on_bnSendMessage_clicked()
 {
-    //walletModel->getMessageModel()->sendMessages(QList recipients, ui->addressFrom->text());
-            //sendstatus = model->sendMessages(recipients, ui->addressFrom->text());
+
+
+    if(!messageModel)
+        return;
+
+    if (ui->lineeditMessage->text().isEmpty())
+        return;
+
+   if (ui->tableWidgetProposals->selectedItems().size() == 0)
+       return;
+
+    std::string sError;
+    std::string sendTo  = strSelectedProposalChannelAddress;
+    std::string message = ui->lineeditMessage->text().toStdString();
+
+    std::string strSenderAccountAddress;
+    for (std::vector<SecMsgAddress>::iterator it = smsgAddresses.begin(); it != smsgAddresses.end(); ++it)
+    {
+        CBitcoinAddress coinAddress(it->sAddress);
+        strSenderAccountAddress = coinAddress.ToString();
+        break;
+    }
+
+    if (sendTo.empty() || message.empty() || strSenderAccountAddress.empty())
+        return;
+
+    if (SecureMsgSend(strSenderAccountAddress, sendTo, message, sError) != 0)
+    {
+        QMessageBox::warning(NULL, tr("Send Secure Message"),
+            tr("Send failed: %1.").arg(sError.c_str()),
+            QMessageBox::Ok, QMessageBox::Ok);
+
+        return;
+    };
+
+    //ui->messageEdit->setMaximumHeight(30);
+    ui->lineeditMessage->clear();
+    ui->lineeditMessage->setFocus();
+    ui->listViewConversation->scrollToBottom();
+    //ui->splitter_2->setSizes(QList<int>() << 100 << 200);
+
+
+    //messageModel->sendMessages(recipients, ui->addressFrom->text());
+    //sendstatus = model->sendMessages(recipients, ui->addressFrom->text());
+}
+
+void MasternodeList::setMessageModel(MessageModel *messageModel)
+{
+    this->messageModel = messageModel;
+    if(!messageModel)
+        return;
+
+    //if (model->proxyModel)
+    //    delete model->proxyModel;
+    messageModel->proxyModel = new QSortFilterProxyModel(this);
+    messageModel->proxyModel->setSourceModel(messageModel);
+    messageModel->proxyModel->setDynamicSortFilter(true);
+    messageModel->proxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
+    messageModel->proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
+    messageModel->proxyModel->sort(MessageModel::ReceivedDateTime);
+    messageModel->proxyModel->setFilterRole(MessageModel::Ambiguous);
+    messageModel->proxyModel->setFilterFixedString("true");
+
+    messageModel->proxyModelContacts = new QSortFilterProxyModel(this);
+    messageModel->proxyModelContacts ->setSourceModel(messageModel);
+    messageModel->proxyModelContacts->setDynamicSortFilter(true);
+    messageModel->proxyModelContacts->setSortCaseSensitivity(Qt::CaseInsensitive);
+    messageModel->proxyModelContacts->setFilterCaseSensitivity(Qt::CaseInsensitive);
+    messageModel->proxyModelContacts->sort(MessageModel::ReceivedDateTime);
+    messageModel->proxyModelContacts->setFilterRole(MessageModel::Ambiguous);
+    messageModel->proxyModelContacts->setFilterFixedString("true");
+
+    //updateContactList();
+
+    // Scroll to bottom, update views.
+    //connect(messageModel, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(incomingMessage()));
+
+    //signal if wallet unlocked
+    //connect (messageModel, SIGNAL(walletUnlockedSignal()), this, SLOT(updateMessagePage()));
+
+    //signal if join, leave channel or add o remove contact
+
+    //connect (messageModel, SIGNAL(updateMessagePage()), this, SLOT(updateMessagePage()));
+
+
+}
+
+bool MasternodeList::eventFilter(QObject* obj, QEvent *event)
+{
+    if (obj != ui->lineeditMessage)
+        return QWidget::eventFilter(obj, event);
+
+    if(event->type() == QEvent::KeyPress) // Special key handling
+    {
+        QKeyEvent *keyevt = static_cast<QKeyEvent*>(event);
+        int key = keyevt->key();
+        Qt::KeyboardModifiers mod = keyevt->modifiers();
+        switch(key)
+        {
+        case Qt::Key_Up:
+            //if(obj == ui->lineEdit) { browseHistory(-1); return true; }
+            break;
+        case Qt::Key_Down:
+            //if(obj == ui->lineEdit) { browseHistory(1); return true; }
+            break;
+        case Qt::Key_PageUp: /* pass paging keys to messages widget */
+        case Qt::Key_PageDown:
+            //if(obj == ui->lineEdit)
+            //{
+            //    QApplication::postEvent(ui->messagesWidget, new QKeyEvent(*keyevt));
+            //    return true;
+            //}
+            break;
+        case Qt::Key_Return:
+        case Qt::Key_Enter:
+            // forward these events
+            if (!mod && obj == ui->lineeditMessage) {
+                event->ignore();
+                //sendMessage();
+                ui->bnSendMessage->animateClick();
+                return true;
+            }
+            break;
+        default:
+           {
+                return false;
+            }
+        }
+    }
+    return QWidget::eventFilter(obj, event);
+}
+
+void MasternodeList::on_listViewConversation_doubleClicked(const QModelIndex &index)
+{
+    QMessageBox::information(0, index.data(Qt::DisplayRole).toString()+" message", index.data(MessageModel::HTMLRole).toString());
+
 }
