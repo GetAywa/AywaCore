@@ -287,6 +287,145 @@ if your masternode should be running but you still do not see &quot;ENABLED&quot
          <string>Proposals</string>
         </attribute>
         <layout class="QGridLayout" name="gridLayout">
+         <item row="3" column="0" rowspan="3">
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QPushButton" name="buttonNewProposal">
+             <property name="text">
+              <string>New Proposal...</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="buttonUpdateList">
+             <property name="text">
+              <string>Refresh</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_4">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QToolButton" name="bnFontSmaller">
+             <property name="text">
+              <string>&lt;</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QToolButton" name="bnFontBigger">
+             <property name="text">
+              <string>&gt;</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_text4567">
+             <property name="text">
+              <string>List will be refreshed in (sec):</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="labelProposalTabSeconds">
+             <property name="text">
+              <string>0</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="0" column="0">
+          <layout class="QHBoxLayout" name="horizontalLayout_31">
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_filter1">
+             <property name="text">
+              <string>Filter List:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="filterProposalLineEdit">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="toolTip">
+              <string>Filter masternode list</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkboxProposaslToVote">
+             <property name="text">
+              <string>Vote required</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="cbActiveOnly">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="text">
+              <string>Active Only</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_31">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>10</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_count1">
+             <property name="text">
+              <string>Proposal Count:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="countProposalsLabel">
+             <property name="text">
+              <string>0</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
          <item row="1" column="0">
           <layout class="QHBoxLayout" name="horizontalLayout_5">
            <property name="spacing">
@@ -382,10 +521,25 @@ if your masternode should be running but you still do not see &quot;ENABLED&quot
                <property name="topMargin">
                 <number>0</number>
                </property>
-               <item row="0" column="1">
-                <widget class="QLabel" name="label_2">
-                 <property name="text">
-                  <string>1000 AYWA for XX days</string>
+               <item row="1" column="0">
+                <widget class="QLineEdit" name="ProposalHash_lineedit">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
+                 <property name="mouseTracking">
+                  <bool>false</bool>
+                 </property>
+                 <property name="focusPolicy">
+                  <enum>Qt::NoFocus</enum>
+                 </property>
+                 <property name="acceptDrops">
+                  <bool>false</bool>
+                 </property>
+                 <property name="placeholderText">
+                  <string>Proposal hash</string>
+                 </property>
+                 <property name="clearButtonEnabled">
+                  <bool>false</bool>
                  </property>
                 </widget>
                </item>
@@ -403,20 +557,17 @@ if your masternode should be running but you still do not see &quot;ENABLED&quot
                  </property>
                 </widget>
                </item>
-               <item row="1" column="1">
-                <widget class="QLabel" name="label_4">
+               <item row="0" column="1">
+                <widget class="QLabel" name="labelProposalFromToDate">
                  <property name="text">
-                  <string>from 01/01/2018</string>
+                  <string>01/01/2018-31/12/2019</string>
                  </property>
                 </widget>
                </item>
-               <item row="1" column="0">
-                <widget class="QLineEdit" name="ProposalHash_lineedit">
-                 <property name="enabled">
-                  <bool>true</bool>
-                 </property>
-                 <property name="placeholderText">
-                  <string>Proposal hash</string>
+               <item row="1" column="1">
+                <widget class="QLabel" name="labelProposalAmountAndDays">
+                 <property name="text">
+                  <string>1000 AYWA for XX days</string>
                  </property>
                 </widget>
                </item>
@@ -445,14 +596,14 @@ p, li { white-space: pre-wrap; }
                 <number>0</number>
                </property>
                <item>
-                <widget class="QLineEdit" name="lineEdit">
+                <widget class="QLineEdit" name="lineeditMessage">
                  <property name="placeholderText">
                   <string>Type your text here. Press Enter to send.</string>
                  </property>
                 </widget>
                </item>
                <item>
-                <widget class="QToolButton" name="toolButton">
+                <widget class="QToolButton" name="bnSendMessage">
                  <property name="text">
                   <string>⏎</string>
                  </property>
@@ -469,21 +620,21 @@ p, li { white-space: pre-wrap; }
                 <number>0</number>
                </property>
                <item>
-                <widget class="QPushButton" name="pushButton">
+                <widget class="QPushButton" name="bnVoteYes">
                  <property name="text">
                   <string>✅YES👍</string>
                  </property>
                 </widget>
                </item>
                <item>
-                <widget class="QPushButton" name="pushButton_2">
+                <widget class="QPushButton" name="bnVoteNo">
                  <property name="text">
                   <string>❌NO👎</string>
                  </property>
                 </widget>
                </item>
                <item>
-                <widget class="QPushButton" name="pushButton_4">
+                <widget class="QPushButton" name="bnVoteAbstain">
                  <property name="text">
                   <string>🚫Abstain</string>
                  </property>
@@ -492,131 +643,6 @@ p, li { white-space: pre-wrap; }
               </layout>
              </item>
             </layout>
-           </item>
-          </layout>
-         </item>
-         <item row="3" column="0" rowspan="3">
-          <layout class="QHBoxLayout" name="horizontalLayout_4">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QPushButton" name="buttonNewProposal">
-             <property name="text">
-              <string>New Proposal...</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="buttonUpdateList">
-             <property name="text">
-              <string>Refresh</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="horizontalSpacer_4">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_text4567">
-             <property name="text">
-              <string>List will be refreshed in (sec):</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="labelProposalTabSeconds">
-             <property name="text">
-              <string>0</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item row="0" column="0">
-          <layout class="QHBoxLayout" name="horizontalLayout_31">
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QLabel" name="label_filter1">
-             <property name="text">
-              <string>Filter List:</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="filterProposalLineEdit">
-             <property name="enabled">
-              <bool>true</bool>
-             </property>
-             <property name="toolTip">
-              <string>Filter masternode list</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="checkboxProposaslToVote">
-             <property name="text">
-              <string>Vote required</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="cbActiveOnly">
-             <property name="enabled">
-              <bool>true</bool>
-             </property>
-             <property name="text">
-              <string>Active Only</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="horizontalSpacer_31">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>10</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_count1">
-             <property name="text">
-              <string>Proposal Count:</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="countProposalsLabel">
-             <property name="text">
-              <string>0</string>
-             </property>
-            </widget>
            </item>
           </layout>
          </item>

@@ -26,6 +26,11 @@
 
 #include <QTimer>
 #include <QMessageBox>
+#include <QSettings>
+
+const QSize FONT_RANGE(4, 40);
+const char fontSizeSettingsKey[] = "msgFontSize";
+
 
 int nFilterVoteRequiredOnly=1;
 int nFilterActiveOnly = 1;
@@ -165,7 +170,7 @@ void MasternodeList::voteAction(std::string vote, std::string strProposalHash = 
         QModelIndex index = selected.at(0);
         int nSelectedRow = index.row();
         if (strProposalHash == "")
-            strProposalHash = ui->tableWidgetProposals->item(nSelectedRow, 7)->text().toStdString();
+            strProposalHash = ui->tableWidgetProposals->item(nSelectedRow, 8)->text().toStdString();
     }
     uint256 hash;
     //std::string strVote;
@@ -567,10 +572,18 @@ void MasternodeList::updateProposalList(bool fForceUpdate)
         QTableWidgetItem *hashItem = new QTableWidgetItem(QString::fromStdString(pGovObj->GetHash().ToString()));
 
         QTableWidgetItem *collateralHashItem = new QTableWidgetItem(QString::fromStdString(pGovObj->GetCollateralHash().ToString()));
-        QTableWidgetItem *creationTimeItem = new QTableWidgetItem(GUIUtil::dateTimeStr(pGovObj->GetCreationTime()));
 
-        QTableWidgetItem *startEpochItem = new QTableWidgetItem(GUIUtil::dateTimeStr(nStart_epoch+Params().GetConsensus().nBudgetPaymentsCycleBlocks/2));
-        QTableWidgetItem *endEpochItem = new QTableWidgetItem(GUIUtil::dateTimeStr(nEnd_epoch-Params().GetConsensus().nBudgetPaymentsCycleBlocks/2));
+        //QTableWidgetItem *creationTimeItem = new QTableWidgetItem(GUIUtil::dateTimeStr(pGovObj->GetCreationTime()));
+        QTableWidgetItem *creationTimeItem = new QTableWidgetItem(QString::fromStdString(DateTimeStrFormat("%Y-%m-%d %H:%M", (pGovObj->GetCreationTime()))));
+        //DateTimeStrFormat("%Y-%m-%d", nStart_epoch)
+
+//        QTableWidgetItem *startEpochItem = new QTableWidgetItem(GUIUtil::dateTimeStr(nStart_epoch+Params().GetConsensus().nBudgetPaymentsCycleBlocks/2));
+//        QTableWidgetItem *endEpochItem = new QTableWidgetItem(GUIUtil::dateTimeStr(nEnd_epoch-Params().GetConsensus().nBudgetPaymentsCycleBlocks/2));
+
+        QTableWidgetItem *startEpochItem = new QTableWidgetItem(QString::fromStdString(DateTimeStrFormat("%Y-%m-%d %H:%M", nStart_epoch+Params().GetConsensus().nBudgetPaymentsCycleBlocks/2)));
+        QTableWidgetItem *endEpochItem = new QTableWidgetItem(QString::fromStdString(DateTimeStrFormat("%Y-%m-%d %H:%M", nEnd_epoch-Params().GetConsensus().nBudgetPaymentsCycleBlocks/2)));
+
+
         QTableWidgetItem *lenghtEpochItem = new QTableWidgetItem(QString::number((nEnd_epoch-nStart_epoch)
                                                                                  / (Params().GetConsensus().nPowTargetSpacing
                                                                                     * Params().GetConsensus().nBudgetPaymentsCycleBlocks)));
@@ -916,9 +929,15 @@ void MasternodeList::on_tableWidgetProposals_itemSelectionChanged()
         };
 
         ui->labelProposalName->setText(strName.c_str());
-        //ui->labelProposalName->setReadOnly(true);
+        ui->ProposalHash_lineedit->setReadOnly(true);
+        //ui->ProposalHash_lineedit->
+
+        ui->labelProposalFromToDate->setText(QString::fromStdString(DateTimeStrFormat("%Y-%m-%d", nStart_epoch)+" - "+DateTimeStrFormat("%Y-%m-%d", nEnd_epoch)));
 
         ui->ProposalDescription_plainTextEdit->setReadOnly(true);
+
+        ui->labelProposalAmountAndDays->setText(QString::number(nPayment_amount) + QString::fromStdString("AYWA for ") + QString::number((nEnd_epoch - nStart_epoch)/86400) + QString::fromStdString(" day(s)"));
+
         //ui->ProposalDescription_plainTextEdit->setText(strPayment_address.c_str());
         //ui->lineeditPaymentAddress->setReadOnly(true);
         //ui->dateeditPaymentStartDate->setDateTime(QDateTime::fromTime_t(nStart_epoch+43200));// + Params().GetConsensus().nBudgetPaymentsCycleBlocks * Params().GetConsensus().nPowTargetSpacing / 2));
@@ -951,4 +970,73 @@ void MasternodeList::on_tableWidgetProposals_itemSelectionChanged()
     }
 
 
+}
+
+
+void MasternodeList::fontBigger()
+{
+    setFontSize(msgFontSize+1);
+}
+
+void MasternodeList::fontSmaller()
+{
+    setFontSize(msgFontSize-1);
+}
+
+void MasternodeList::setFontSize(int newSize)
+{
+    QSettings settings;
+
+    //don't allow a insane font size
+    if (newSize < FONT_RANGE.width() || newSize > FONT_RANGE.height())
+        return;
+
+    // temp. store content
+    QString str = ui->ProposalDescription_plainTextEdit->toHtml();
+
+    // replace font tags size in current content
+    str.replace(QString("font-size:%1pt").arg(msgFontSize), QString("font-size:%1pt").arg(newSize));
+
+    // store the new font size
+    msgFontSize = newSize;
+    settings.setValue(fontSizeSettingsKey, msgFontSize);
+
+    // clear console (reset icon sizes, default stylesheet) and re-add the content
+    //float oldPosFactor = 1.0 / ui->ProposalDescription_plainTextEdit->verticalScrollBar()->maximum() * ui->ProposalDescription_plainTextEdit->verticalScrollBar()->value();
+    //clear(false);
+    ui->ProposalDescription_plainTextEdit->setHtml(str);
+    //ui->ProposalDescription_plainTextEdit->verticalScrollBar()->setValue(oldPosFactor * ui->ProposalDescription_plainTextEdit->verticalScrollBar()->maximum());
+}
+
+void MasternodeList::on_bnFontSmaller_clicked()
+{
+    fontBigger();
+}
+
+void MasternodeList::on_bnFontBigger_clicked()
+{
+    fontSmaller();
+}
+
+
+
+void MasternodeList::on_bnVoteYes_clicked()
+{
+  voteYesAction();
+}
+
+void MasternodeList::on_bnVoteNo_clicked()
+{
+    voteNoActionSLOT();
+}
+
+void MasternodeList::on_bnVoteAbstain_clicked()
+{
+    voteAbstainActionSLOT();
+}
+
+void MasternodeList::on_bnSendMessage_clicked()
+{
+    //walletModel->getMessageModel()->sendMessages(QList recipients, ui->addressFrom->text());
+            //sendstatus = model->sendMessages(recipients, ui->addressFrom->text());
 }

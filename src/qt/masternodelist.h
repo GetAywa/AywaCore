@@ -50,6 +50,7 @@ private:
     int64_t nTimeFilterUpdated;
     bool fFilterUpdated;
     bool fFilterProposalUpdated;
+    int msgFontSize;
 
 public Q_SLOTS:
     void updateMyMasternodeInfo(QString strAlias, QString strAddr, const COutPoint& outpoint);
@@ -104,5 +105,15 @@ private Q_SLOTS:
     void on_cbActiveOnly_stateChanged(int arg1);
     void on_tableWidgetProposals_itemActivated();
     void on_tableWidgetProposals_itemSelectionChanged();
+    void fontBigger();
+    void fontSmaller();
+    void setFontSize(int newSize);
+    void on_bnFontSmaller_clicked();
+    void on_bnFontBigger_clicked();
+    //void on_pushButton_clicked();
+    void on_bnVoteYes_clicked();
+    void on_bnVoteNo_clicked();
+    void on_bnVoteAbstain_clicked();
+    void on_bnSendMessage_clicked();
 };
 #endif // MASTERNODELIST_H
