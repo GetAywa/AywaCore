@@ -197,6 +197,10 @@ MasternodeList::MasternodeList(const PlatformStyle *platformStyle, QWidget *pare
     updateProposalList();
     ui->tableWidgetProposals->installEventFilter(this);
     ui->lineeditMessage->installEventFilter(this);
+    ui->bnFontBigger->setVisible(false);
+    ui->bnFontSmaller->setVisible(false);
+    ui->textBrowser->setVisible(false);
+
 }
 
 MasternodeList::~MasternodeList()
@@ -970,6 +974,17 @@ void MasternodeList::on_tableWidgetProposals_itemActivated()
 
 void MasternodeList::on_tableWidgetProposals_itemSelectionChanged()
 {
+    //ui->textBrowser->setVisible(false);
+//    labelProposalAmountAndDays
+//    labelProposalFromToDate
+//    labelProposalName
+//    labelTotalProposalBudget
+//    ProposalDescription_plainTextEdit
+//    bnVoteAbstain
+//    bnVoteNo
+//    bnVoteYes
+//    bnSendMessage
+//    lineeditMessage
 
     std::string strProposalHash;
     {
@@ -1021,7 +1036,7 @@ void MasternodeList::on_tableWidgetProposals_itemSelectionChanged()
 
         ui->labelProposalAmountAndDays->setText(QString::number(nPayment_amount) + QString::fromStdString(" AYWA for ") + QString::number((nEnd_epoch - nStart_epoch)/86400) + QString::fromStdString(" day(s)"));
 
-        ui->labelTotalProposalBudget->setText(QString::fromStdString("Total budget: ") + QString::number(nPayment_amount*(nEnd_epoch - nStart_epoch)/86400) + QString::fromStdString(" AYWA"));
+        ui->labelTotalProposalBudget->setText(QString::fromStdString("Total budget: ") + QString::number(nPayment_amount*((nEnd_epoch - nStart_epoch)/86400)) + QString::fromStdString(" AYWA"));
         //ui->ProposalDescription_plainTextEdit->setText(strPayment_address.c_str());
         //ui->lineeditPaymentAddress->setReadOnly(true);
         //ui->dateeditPaymentStartDate->setDateTime(QDateTime::fromTime_t(nStart_epoch+43200));// + Params().GetConsensus().nBudgetPaymentsCycleBlocks * Params().GetConsensus().nPowTargetSpacing / 2));
