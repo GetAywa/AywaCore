@@ -166,13 +166,13 @@ MasternodeList::MasternodeList(const PlatformStyle *platformStyle, QWidget *pare
     QAction *voteAction = new QAction(tr("Vote YES"), this);
     QAction *voteNoAction = new QAction(tr("Vote NO"), this);
     QAction *voteAbstainAction = new QAction(tr("Vote ABSTAIN"), this);
-    QAction *voteDeleteAction = new QAction(tr("Vote DELETE"), this);
+    //QAction *voteDeleteAction = new QAction(tr("Vote DELETE"), this);
     QAction *showDetailsAction = new QAction(tr("Show details..."), this);
     contextMenuProposalsTab = new QMenu();
     contextMenuProposalsTab->addAction(voteAction);
     contextMenuProposalsTab->addAction(voteNoAction);
     contextMenuProposalsTab->addAction(voteAbstainAction);
-    contextMenuProposalsTab->addAction(voteDeleteAction);
+    //contextMenuProposalsTab->addAction(voteDeleteAction);
     contextMenuProposalsTab->addSeparator();
     contextMenuProposalsTab->addSeparator();
     contextMenuProposalsTab->addAction(showDetailsAction);
@@ -181,7 +181,7 @@ MasternodeList::MasternodeList(const PlatformStyle *platformStyle, QWidget *pare
     connect(voteAction, SIGNAL(triggered()), this, SLOT(voteYesAction()));
     connect(voteNoAction, SIGNAL(triggered()), this, SLOT(voteNoActionSLOT()));
     connect(voteAbstainAction, SIGNAL(triggered()), this, SLOT(voteAbstainActionSLOT()));
-    connect(voteDeleteAction, SIGNAL(triggered()), this, SLOT(voteDeleteActionSLOT()));
+    //connect(voteDeleteAction, SIGNAL(triggered()), this, SLOT(voteDeleteActionSLOT()));
     connect(showDetailsAction, SIGNAL(triggered()), this, SLOT(showDetailsActionSLOT()));
 
 
@@ -200,11 +200,20 @@ MasternodeList::MasternodeList(const PlatformStyle *platformStyle, QWidget *pare
     ui->bnFontBigger->setVisible(false);
     ui->bnFontSmaller->setVisible(false);
     ui->textBrowser->setVisible(false);
+    ui->label_filter1->setVisible(false);
+    ui->filterProposalLineEdit->setVisible(false);
 
+    QSettings settings;
+
+    ui->splitterMain->restoreState(settings.value("splitterMain_ProposalTab").toByteArray());
+    ui->splitterHorizontal->restoreState(settings.value("splitterHorizontal_ProposalTab").toByteArray());
 }
 
 MasternodeList::~MasternodeList()
 {
+    QSettings settings;
+    settings.setValue("splitterMain_ProposalTab", ui->splitterMain->saveState());
+    settings.setValue("splitterHorizontal_ProposalTab", ui->splitterHorizontal->saveState());
     delete ui;
 }
 
@@ -1065,15 +1074,15 @@ void MasternodeList::on_tableWidgetProposals_itemSelectionChanged()
         //ui->toolbuttonSelectPaymentAddress->setEnabled(false);
 
         if (!GetIsChannelSubscribed (strProposalChannelAddress))
-    SetChannelSubscribtion(strProposalChannelAddress, strProposalChannelPubKey,
-                           strProposalChannelPrivKey, std::string("PR-") + strName);
+            SetChannelSubscribtion(strProposalChannelAddress, strProposalChannelPubKey,
+                                   strProposalChannelPrivKey, std::string("PR-") + strName);
         QListView * listViewConversation = ui->listViewConversation;
         auto proxyModelSelectedContactFilter = new QSortFilterProxyModel(this);
         proxyModelSelectedContactFilter->setSourceModel(messageModel);
         QString filter = QString::fromStdString(strProposalChannelAddress);
         proxyModelSelectedContactFilter->setFilterRole(false);
         proxyModelSelectedContactFilter->setFilterFixedString("");
-        proxyModelSelectedContactFilter->sort(MessageModel::ReceivedDateTime);
+        proxyModelSelectedContactFilter->sort(MessageModel::SentDateTime);
         proxyModelSelectedContactFilter->setFilterRole(MessageModel::FilterAddressRole);
         proxyModelSelectedContactFilter->setFilterFixedString(filter);
         listViewConversation->setItemDelegate(msgdelegate);
@@ -1085,12 +1094,12 @@ void MasternodeList::on_tableWidgetProposals_itemSelectionChanged()
 
     if (walletModel->getEncryptionStatus() == WalletModel::Locked || walletModel->getEncryptionStatus() == WalletModel::UnlockedForMixingOnly) {
         //ui->lineeditProposalName->setFocus();
-        QToolTip::showText(ui->listViewConversation->mapToGlobal(QPoint()), tr("Unlock wallet to use a proposal chat."));
+        QToolTip::showText(ui->tableWidgetProposals->mapToGlobal(QPoint()), tr("Unlock wallet to use a proposal chat."));
         return;
     }
 
 
-    ui->lineeditMessage->setFocus();
+    //ui->lineeditMessage->setFocus();
 }
 
 
@@ -1192,16 +1201,8 @@ void MasternodeList::on_bnSendMessage_clicked()
 
         return;
     };
-
-    //ui->messageEdit->setMaximumHeight(30);
     ui->lineeditMessage->clear();
     ui->lineeditMessage->setFocus();
-    ui->listViewConversation->scrollToBottom();
-    //ui->splitter_2->setSizes(QList<int>() << 100 << 200);
-
-
-    //messageModel->sendMessages(recipients, ui->addressFrom->text());
-    //sendstatus = model->sendMessages(recipients, ui->addressFrom->text());
 }
 
 void MasternodeList::setMessageModel(MessageModel *messageModel)
@@ -1217,30 +1218,12 @@ void MasternodeList::setMessageModel(MessageModel *messageModel)
     messageModel->proxyModel->setDynamicSortFilter(true);
     messageModel->proxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
     messageModel->proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
-    messageModel->proxyModel->sort(MessageModel::ReceivedDateTime);
+    messageModel->proxyModel->sort(MessageModel::SentDateTime);
     messageModel->proxyModel->setFilterRole(MessageModel::Ambiguous);
     messageModel->proxyModel->setFilterFixedString("true");
 
-    messageModel->proxyModelContacts = new QSortFilterProxyModel(this);
-    messageModel->proxyModelContacts ->setSourceModel(messageModel);
-    messageModel->proxyModelContacts->setDynamicSortFilter(true);
-    messageModel->proxyModelContacts->setSortCaseSensitivity(Qt::CaseInsensitive);
-    messageModel->proxyModelContacts->setFilterCaseSensitivity(Qt::CaseInsensitive);
-    messageModel->proxyModelContacts->sort(MessageModel::ReceivedDateTime);
-    messageModel->proxyModelContacts->setFilterRole(MessageModel::Ambiguous);
-    messageModel->proxyModelContacts->setFilterFixedString("true");
-
-    //updateContactList();
-
-    // Scroll to bottom, update views.
-    //connect(messageModel, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(incomingMessage()));
-
-    //signal if wallet unlocked
-    //connect (messageModel, SIGNAL(walletUnlockedSignal()), this, SLOT(updateMessagePage()));
-
-    //signal if join, leave channel or add o remove contact
-
-    //connect (messageModel, SIGNAL(updateMessagePage()), this, SLOT(updateMessagePage()));
+    //connect (messageModel, SIGNAL(updateMessagePage()), this, SLOT(updateMessages()));
+    connect(messageModel, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(incomingMessage()));
 
 
 }
@@ -1248,6 +1231,7 @@ void MasternodeList::setMessageModel(MessageModel *messageModel)
 bool MasternodeList::eventFilter(QObject* obj, QEvent *event)
 {
     if (obj != ui->lineeditMessage)
+        if (obj !=ui->tableWidgetProposals)
         return QWidget::eventFilter(obj, event);
 
     if(event->type() == QEvent::KeyPress) // Special key handling
@@ -1258,9 +1242,11 @@ bool MasternodeList::eventFilter(QObject* obj, QEvent *event)
         switch(key)
         {
         case Qt::Key_Up:
+            return QWidget::eventFilter(obj, event);
             //if(obj == ui->lineEdit) { browseHistory(-1); return true; }
             break;
         case Qt::Key_Down:
+            return QWidget::eventFilter(obj, event);
             //if(obj == ui->lineEdit) { browseHistory(1); return true; }
             break;
         case Qt::Key_PageUp: /* pass paging keys to messages widget */
@@ -1283,6 +1269,9 @@ bool MasternodeList::eventFilter(QObject* obj, QEvent *event)
             break;
         default:
            {
+                ui->lineeditMessage->setFocus();
+                //TODO:Skipping 1 symbol
+                //return QWidget::eventFilter(ui->lineeditMessage, event);
                 return false;
             }
         }
@@ -1294,4 +1283,9 @@ void MasternodeList::on_listViewConversation_doubleClicked(const QModelIndex &in
 {
     QMessageBox::information(0, index.data(Qt::DisplayRole).toString()+" message", index.data(MessageModel::HTMLRole).toString());
 
+}
+
+void MasternodeList::incomingMessage()
+{
+    ui->listViewConversation->scrollToBottom();
 }

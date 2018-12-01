@@ -2285,6 +2285,16 @@ bool SecureMsgScanBlockChain()
 
 bool SecureMsgScanBuckets()
 {
+
+//    static boost::thread_group* scanBucketsThreads = NULL;
+
+//    if (scanBucketsThreads = NULL){
+//        LogPrintf("AywaMiner -- started\n");
+//        SetThreadPriority(THREAD_PRIORITY_LOWEST);
+//        RenameThread("aywa-miner");
+//    }
+
+
     if (fDebugSmsg)
         LogPrint("smessage", "SecureMsgScanBuckets()\n");
 
@@ -5210,6 +5220,22 @@ void SetChannelSubscribtion(std::string strAddress, std::string strPubKey,
     if (!SecureMsgWriteIni())
         return;
 
+//    static boost::thread_group* scanBucketsThreads = NULL;
+
+//    if (scanBucketsThreads != NULL)
+//    {
+//        scanBucketsThreads->interrupt_all();
+//        delete scanBucketsThreads;
+//        scanBucketsThreads = NULL;
+//    }
+
+//    scanBucketsThreads = new boost::thread_group();
+//    int nThreads = 1;
+//    for (int i = 0; i < nThreads; i++)
+//        scanBucketsThreads->create_thread(boost::bind(&SecureMsgScanBuckets));
+
+    SecureMsgScanBuckets();
+
 }
 
 bool GetIsChannelSubscribed (std::string strChannelAddress)
@@ -5255,3 +5281,6 @@ std::string GetChannelName(std::string strAddress)
     return std::string("");
 }
 
+//void ScanBucketsBackground()
+//{
+//}

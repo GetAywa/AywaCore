@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>822</width>
-    <height>539</height>
+    <height>553</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -362,7 +362,7 @@ if your masternode should be running but you still do not see &quot;ENABLED&quot
           </layout>
          </item>
          <item>
-          <widget class="QSplitter" name="splitter">
+          <widget class="QSplitter" name="splitterMain">
            <property name="mouseTracking">
             <bool>false</bool>
            </property>
@@ -450,7 +450,7 @@ if your masternode should be running but you still do not see &quot;ENABLED&quot
            <widget class="QWidget" name="verticalLayoutWidget">
             <layout class="QVBoxLayout" name="verticalLayout_2">
              <item>
-              <widget class="QSplitter" name="splitter_2">
+              <widget class="QSplitter" name="splitterHorizontal">
                <property name="mouseTracking">
                 <bool>false</bool>
                </property>
@@ -524,7 +524,7 @@ p, li { white-space: pre-wrap; }
                       </font>
                      </property>
                      <property name="text">
-                      <string>&lt;SELECTED PROPOSAL_NAME (DD/MM/YYYY)&gt;</string>
+                      <string>&lt;SELECTED PROPOSAL_NAME&gt;</string>
                      </property>
                     </widget>
                    </item>
@@ -554,7 +554,7 @@ p, li { white-space: pre-wrap; }
                    <item row="4" column="1">
                     <widget class="QLabel" name="labelProposalFromToDate">
                      <property name="text">
-                      <string>DD/MM/YYYY - DD/MM/YYYY</string>
+                      <string>&lt;selected proposal period&gt;</string>
                      </property>
                     </widget>
                    </item>
@@ -579,8 +579,7 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;4. If you create first proposal ask 1-50 AYWA for 1-5 days, but if a  job useful for Aywa already done and you share result, you can ask as many as you want.&lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:18pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;5. All IdeaMining payments are transferred automatically by blockchain daily at about 22:00 UTC. Coins are generating for approved proposals only. Platform doesn't have any hidden developers fees.&lt;/span&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:18pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p align=&quot;justify&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;6. If &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p align=&quot;justify&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:18pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                   </widget>
                  </item>
@@ -644,11 +643,7 @@ p, li { white-space: pre-wrap; }
                   </layout>
                  </item>
                  <item row="1" column="0">
-                  <widget class="QListView" name="listViewConversation">
-                   <property name="toolTipDuration">
-                    <number>7</number>
-                   </property>
-                  </widget>
+                  <widget class="QListView" name="listViewConversation"/>
                  </item>
                 </layout>
                </widget>

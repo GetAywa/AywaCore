@@ -123,5 +123,7 @@ private Q_SLOTS:
     void on_bnVoteAbstain_clicked();
     void on_bnSendMessage_clicked();
     void on_listViewConversation_doubleClicked(const QModelIndex &index);
+    //void updateMessages();
+    void incomingMessage();
 };
 #endif // MASTERNODELIST_H
