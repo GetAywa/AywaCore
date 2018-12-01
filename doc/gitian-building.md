@@ -304,7 +304,7 @@ Clone the git repositories for Aywa Core and Gitian.
 
 ```bash
 git clone https://github.com/devrandom/gitian-builder.git
-git clone https://github.com/aywapay/aywa
+git clone https://github.com/getaywa/aywacore
 ```
 
 Setting up the Gitian image
@@ -396,9 +396,9 @@ For example:
 ```bash
 URL=https://github.com/crowning-/aywa.git
 COMMIT=b616fb8ef0d49a919b72b0388b091aaec5849b96
-./bin/gbuild --commit aywa=${COMMIT} --url aywa=${URL} ../aywa/contrib/gitian-descriptors/gitian-linux.yml
-./bin/gbuild --commit aywa=${COMMIT} --url aywa=${URL} ../aywa/contrib/gitian-descriptors/gitian-win.yml
-./bin/gbuild --commit aywa=${COMMIT} --url aywa=${URL} ../aywa/contrib/gitian-descriptors/gitian-osx.yml
+./bin/gbuild --commit aywa=${COMMIT} --url aywa=${URL} ../aywacore/contrib/gitian-descriptors/gitian-linux.yml
+./bin/gbuild --commit aywa=${COMMIT} --url aywa=${URL} ../aywacore/contrib/gitian-descriptors/gitian-win.yml
+./bin/gbuild --commit aywa=${COMMIT} --url aywa=${URL} ../aywacore/contrib/gitian-descriptors/gitian-osx.yml
 ```
 
 Building fully offline
@@ -444,12 +444,12 @@ Then when building, override the remote URLs that gbuild would otherwise pull fr
 ```bash
 
 cd /some/root/path/
-git clone https://github.com/aywapay/aywa-detached-sigs.git
+git clone https://github.com/getaywa/aywa-detached-sigs.git
 
-BTCPATH=/some/root/path/aywa.git
+BTCPATH=/some/root/path/aywacore.git
 SIGPATH=/some/root/path/aywa-detached-sigs.git
 
-./bin/gbuild --url aywa=${BTCPATH},signature=${SIGPATH} ../aywa/contrib/gitian-descriptors/gitian-win-signer.yml
+./bin/gbuild --url aywa=${BTCPATH},signature=${SIGPATH} ../aywacore/contrib/gitian-descriptors/gitian-win-signer.yml
 ```
 
 Signing externally
@@ -476,6 +476,6 @@ Uploading signatures (not yet implemented)
 ---------------------
 
 In the future it will be possible to push your signatures (both the `.assert` and `.assert.sig` files) to the
-[aywa/gitian.sigs](https://github.com/aywapay/gitian.sigs/) repository, or if that's not possible to create a pull
+[aywacore/gitian.sigs](https://github.com/aywacore/gitian.sigs/) repository, or if that's not possible to create a pull
 request.
 There will be an official announcement when this repository is online.
