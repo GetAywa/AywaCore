@@ -370,7 +370,7 @@ if your masternode should be running but you still do not see &quot;ENABLED&quot
             <enum>Qt::Horizontal</enum>
            </property>
            <widget class="QWidget" name="horizontalLayoutWidget">
-            <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <layout class="QVBoxLayout" name="verticalLayout_4">
              <item>
               <widget class="QTableWidget" name="tableWidgetProposals">
                <property name="editTriggers">
@@ -378,6 +378,9 @@ if your masternode should be running but you still do not see &quot;ENABLED&quot
                </property>
                <property name="alternatingRowColors">
                 <bool>true</bool>
+               </property>
+               <property name="selectionMode">
+                <enum>QAbstractItemView::SingleSelection</enum>
                </property>
                <property name="selectionBehavior">
                 <enum>QAbstractItemView::SelectRows</enum>
@@ -500,12 +503,17 @@ if your masternode should be running but you still do not see &quot;ENABLED&quot
                  </item>
                  <item row="2" column="1">
                   <widget class="QTextEdit" name="ProposalDescription_plainTextEdit">
+                   <property name="font">
+                    <font>
+                     <pointsize>12</pointsize>
+                    </font>
+                   </property>
                    <property name="html">
                     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.SF NS Text'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&amp;lt;selected proposal description &amp;gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.SF NS Text'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:13pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                   </widget>
                  </item>
@@ -524,7 +532,7 @@ p, li { white-space: pre-wrap; }
                       </font>
                      </property>
                      <property name="text">
-                      <string>&lt;SELECTED PROPOSAL_NAME&gt;</string>
+                      <string/>
                      </property>
                     </widget>
                    </item>
@@ -537,7 +545,7 @@ p, li { white-space: pre-wrap; }
                       </font>
                      </property>
                      <property name="text">
-                      <string>Total: &lt;...&gt;AYWA</string>
+                      <string/>
                      </property>
                      <property name="alignment">
                       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -547,14 +555,14 @@ p, li { white-space: pre-wrap; }
                    <item row="5" column="1">
                     <widget class="QLabel" name="labelProposalAmountAndDays">
                      <property name="text">
-                      <string>&lt;...&gt; AYWA for &lt;...&gt; day(s)</string>
+                      <string/>
                      </property>
                     </widget>
                    </item>
                    <item row="4" column="1">
                     <widget class="QLabel" name="labelProposalFromToDate">
                      <property name="text">
-                      <string>&lt;selected proposal period&gt;</string>
+                      <string/>
                      </property>
                     </widget>
                    </item>
@@ -598,21 +606,21 @@ p, li { white-space: pre-wrap; }
                    <item>
                     <widget class="QPushButton" name="bnVoteYes">
                      <property name="text">
-                      <string>✅ YES👍</string>
+                      <string>✅ YES</string>
                      </property>
                     </widget>
                    </item>
                    <item>
                     <widget class="QPushButton" name="bnVoteNo">
                      <property name="text">
-                      <string>⛔️ NO👎</string>
+                      <string>⛔️ NO</string>
                      </property>
                     </widget>
                    </item>
                    <item>
                     <widget class="QPushButton" name="bnVoteAbstain">
                      <property name="text">
-                      <string>Abstain 😐</string>
+                      <string>✖️ Cancel Vote</string>
                      </property>
                     </widget>
                    </item>

@@ -41,6 +41,7 @@ int nFilterActiveOnly = 1;
 int nProposalCount=0;
 int GetNextSuperblockTime();
 std::string strSelectedProposalChannelAddress;
+//Dvoid setColorToRow(int rowIndex, QColor color);
 
 int GetOffsetFromUtc()
 {
@@ -204,7 +205,6 @@ MasternodeList::MasternodeList(const PlatformStyle *platformStyle, QWidget *pare
     ui->filterProposalLineEdit->setVisible(false);
 
     QSettings settings;
-
     ui->splitterMain->restoreState(settings.value("splitterMain_ProposalTab").toByteArray());
     ui->splitterHorizontal->restoreState(settings.value("splitterHorizontal_ProposalTab").toByteArray());
 }
@@ -579,7 +579,15 @@ void MasternodeList::updateNodeList()
     updateProposalList();
 }
 
-//force update list after vote.
+//void setColorToRow(int rowIndex, QColor color)
+//{
+//    QTableWidget table = ui->tableWidgetProposals;
+//    for (int j = 0; table.columnCount(); i++){
+//        table.item(rowIndex, j).setBackground(color);
+//    }
+//}
+
+//fForceUpdate - force update list after voting.
 void MasternodeList::updateProposalList(bool fForceUpdate)
 {
 
@@ -611,6 +619,8 @@ void MasternodeList::updateProposalList(bool fForceUpdate)
         COutPoint mnCollateralOutpoint;
 
         int nAbsoluteYesVoteCount = pGovObj->GetAbsoluteYesCount(VOTE_SIGNAL_FUNDING);
+
+        bool fCachedFunding = pGovObj->IsSetCachedFunding();
 
         BOOST_FOREACH(CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
             int32_t vout = boost::lexical_cast<uint32_t>(mne.getOutputIndex());
@@ -709,6 +719,7 @@ void MasternodeList::updateProposalList(bool fForceUpdate)
         ui->tableWidgetProposals->setItem(0, 9, collateralHashItem);
         ui->tableWidgetProposals->setItem(0, 10, voteSignalItem);
 
+        //set font bold for own proposals
         if (IsMine(*pwalletMain, paymentAddress.Get()))
         {
             //ui->tableWidgetProposals->item(0,0)->setBackground(Qt::red);
@@ -718,13 +729,19 @@ void MasternodeList::updateProposalList(bool fForceUpdate)
             //ui->tableWidgetProposals->item(0,2)->setBackground(QColor::fromRgb(255,0,0));
         }
 
-        if (nAbsoluteYesVoteCount>10){
-            ui->tableWidgetProposals->item(0,1)->setBackground(QColor::fromRgb(0,200,200));
-            ui->tableWidgetProposals->item(0,2)->setBackground(QColor::fromRgb(0,200,200));
-            ui->tableWidgetProposals->item(0,3)->setBackground(QColor::fromRgb(0,200,200));
-            ui->tableWidgetProposals->item(0,4)->setBackground(QColor::fromRgb(0,200,200));
-            ui->tableWidgetProposals->item(0,5)->setBackground(QColor::fromRgb(0,200,200));
-            ui->tableWidgetProposals->item(0,6)->setBackground(QColor::fromRgb(0,200,200));
+        //green color for approved proposals
+        if (fCachedFunding){
+            ui->tableWidgetProposals->item(0,0)->setBackground(QColor::fromRgb(168, 247, 234));
+            ui->tableWidgetProposals->item(0,1)->setBackground(QColor::fromRgb(168, 247, 234));
+            ui->tableWidgetProposals->item(0,2)->setBackground(QColor::fromRgb(168, 247, 234));
+            ui->tableWidgetProposals->item(0,3)->setBackground(QColor::fromRgb(168, 247, 234));
+            ui->tableWidgetProposals->item(0,4)->setBackground(QColor::fromRgb(168, 247, 234));
+            ui->tableWidgetProposals->item(0,5)->setBackground(QColor::fromRgb(168, 247, 234));
+            ui->tableWidgetProposals->item(0,6)->setBackground(QColor::fromRgb(168, 247, 234));
+            //setForeground
+
+
+            //setColorToRow(0, QColor::fromRgb(0,200,100));
         }
     }
 
@@ -1175,8 +1192,8 @@ void MasternodeList::on_bnSendMessage_clicked()
     if (ui->lineeditMessage->text().isEmpty())
         return;
 
-   if (ui->tableWidgetProposals->selectedItems().size() == 0)
-       return;
+//   if (ui->tableWidgetProposals->selectedItems().size() == 0)
+//       return;
 
     std::string sError;
     std::string sendTo  = strSelectedProposalChannelAddress;

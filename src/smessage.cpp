@@ -606,14 +606,25 @@ void ThreadSecureMsg()
             LogPrint("smessage", "SecureMsgThread %d \n", now);
 
         vTimedOutLocks.resize(0);
-
+        std::string strErrorMessages;
         int64_t cutoffTime = now - SMSG_RETENTION;
+//        try
+//        {
         {
             LOCK(cs_smsg);
+
+//            std::map<int64_t, SecMsgBucket>::iterator it_check;
+//            it_check = smsgBuckets.begin();
+//            if (!it_check){
+//                LogPrint ("smessage", "smsgBuckets.begin()=0 error");
+//                continue;
+//            }
+
+
             for (std::map<int64_t, SecMsgBucket>::iterator it(smsgBuckets.begin()); it != smsgBuckets.end(); it++)//it++)
             {
                 if (fDebugSmsg)
-                LogPrint("smessage", "Checking bucket %d, size %u \n", it->first, it->second.setTokens.size());
+                    LogPrint("smessage", "Checking bucket %d, size %u \n", it->first, it->second.setTokens.size());
                 if (it->first < cutoffTime)
                 {
                     if (fDebugSmsg)
@@ -647,20 +658,33 @@ void ThreadSecureMsg()
 
                     smsgBuckets.erase(it);
                 } else
-                if (it->second.nLockCount > 0) // -- tick down nLockCount, so will eventually expire if peer never sends data
-                {
-                    it->second.nLockCount--;
-
-                    if (it->second.nLockCount == 0)     // lock timed out
+                    if (it->second.nLockCount > 0) // -- tick down nLockCount, so will eventually expire if peer never sends data
                     {
-                        vTimedOutLocks.push_back(std::make_pair(it->first, it->second.nLockPeerId)); // cs_vNodes
+                        it->second.nLockCount--;
 
-                        it->second.nLockPeerId = 0;
-                    }; // if (it->second.nLockCount == 0)
+                        if (it->second.nLockCount == 0)     // lock timed out
+                        {
+                            vTimedOutLocks.push_back(std::make_pair(it->first, it->second.nLockPeerId)); // cs_vNodes
 
-                }; // ! if (it->first < cutoffTime)
+                            it->second.nLockPeerId = 0;
+                        }; // if (it->second.nLockCount == 0)
+
+                    }; // ! if (it->first < cutoffTime)
             };
         } // cs_smsg
+        //        }
+//        catch(std::exception& e) {
+//            strErrorMessages = std::string(e.what()) + std::string(";");
+//            LogPrint("smessage", strErrorMessages.c_str());
+//            break;
+//        }
+//        catch(...) {
+//            strErrorMessages += "Unknown exception.";
+//            LogPrint ("smessage", strErrorMessages.c_str());
+//            break;
+//        }
+
+
 
         for (std::vector<std::pair<int64_t, NodeId> >::iterator it(vTimedOutLocks.begin()); it != vTimedOutLocks.end(); it++)
         {

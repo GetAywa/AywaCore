@@ -36,7 +36,7 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_9">
      <item>
-      <widget class="QSplitter" name="splitter_2">
+      <widget class="QSplitter" name="splitterMain">
        <property name="maximumSize">
         <size>
          <width>16777215</width>
@@ -89,7 +89,7 @@
          </item>
         </layout>
        </widget>
-       <widget class="QSplitter" name="splitter">
+       <widget class="QSplitter" name="splitterHorizontal">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>0</horstretch>
@@ -223,7 +223,7 @@
                  <string>Send message (Enter)</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="../aywa.qrc">
+                 <iconset>
                   <normaloff>:/icons/light/tx_output</normaloff>:/icons/light/tx_output</iconset>
                 </property>
                 <property name="iconSize">
@@ -301,8 +301,6 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../aywa.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

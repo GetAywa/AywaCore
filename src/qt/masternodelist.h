@@ -47,7 +47,6 @@ public:
     void StartAlias(std::string strAlias);
     void StartAll(std::string strCommand = "start-all");
     void voteAction(std::string vote, std::string strProposalHash);
-
 private:
     QMenu *contextMenu, *contextMenuProposalsTab;
     int64_t nTimeFilterUpdated;

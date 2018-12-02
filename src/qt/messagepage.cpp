@@ -16,6 +16,7 @@
 #include <QClipboard>
 #include <QMessageBox>
 #include <QMenu>
+#include <QSettings>
 #include <QStyledItemDelegate>
 #include <QAbstractTextDocumentLayout>
 #include <QPainter>
@@ -67,16 +68,38 @@ void MessageViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &o
     doc.setHtml(html);
 
     // Painting item without text
+
+//    //temp
+//    if (option.state & QStyle::State_Selected)
+//           painter->fillRect(option.rect, option.palette.highlight());
+
+
     optionV4.text = QString();
     style->drawControl(QStyle::CE_ItemViewItem, &optionV4, painter);
 
     QAbstractTextDocumentLayout::PaintContext ctx;
 
-    // Highlighting text if item is selected
-    if (optionV4.state & QStyle::State_Selected)
-        ctx.palette.setColor(QPalette::Text, optionV4.palette.color(QPalette::Active, QPalette::HighlightedText).lighter(190));
+     //Highlighting text if item is selected
+//    if (optionV4.state & QStyle::State_Selected)
+//    ctx.palette.setColor(QPalette::Text, optionV4.palette.color(QPalette::Active, QPalette::HighlightedText).lighter(50));
 
-    //mouse over event test
+
+    //QVariant background = index.data(Qt::BackgroundRole);
+        //if (background.canConvert<QBrush>())
+        //    painter->fillRect(option.rect, background.value<QBrush>());
+        //// the comment below makes selection transparent
+        ////QStyledItemDelegate::paint(painter, option, index);
+        //// To draw a border on selected cells
+//        if(option.state & QStyle::State_Selected) {
+//            painter->save();
+//            QPen pen(Qt::darkBlue, 2, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin);
+//            int w = pen.width()/2;
+//            painter->setPen(pen);
+//            painter->drawRect(option.rect.adjusted(w,w,-w,-w));
+//            painter->restore();
+//        }
+
+     //mouse over event test
 //    if(optionV4.state & QStyle::State_MouseOver)
 //        ctx.palette.setColor(QPalette::Text, optionV4.palette.color(QPalette::Active, QPalette::HighlightedText));
     /* test*/
@@ -86,8 +109,13 @@ void MessageViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &o
 
     QRect textRect = style->subElementRect(QStyle::SE_ItemViewItemText, &optionV4);
 
+    if (optionV4.state & QStyle::State_Selected)
+           painter->fillRect(textRect, optionV4.palette.color(QPalette::Active, QPalette::Highlight).lighter(200));
+
+
     doc.setTextWidth( textRect.width() );
     painter->save();
+
     painter->translate(textRect.topLeft());
     painter->setClipRect(textRect.translated(-textRect.topLeft()));
     doc.documentLayout()->draw(painter, ctx);
@@ -162,10 +190,18 @@ MessagePage::MessagePage(QWidget *parent) :
 
     ui->listWidgetConversation->setVisible(false);
     ui->bnEmoji->setVisible(false);
+    ui->splitterMain->setSizes(QList<int>() << 80<< 100);
+    QSettings settings;
+    ui->splitterMain->restoreState(settings.value("splitterMain_MessagePage").toByteArray());
+    ui->splitterHorizontal->restoreState(settings.value("splitterHorizontal_MessagePage").toByteArray());
+
 }
 
 MessagePage::~MessagePage()
 {
+    QSettings settings;
+    settings.setValue("splitterMain_MessagePage", ui->splitterMain->saveState());
+    settings.setValue("splitterHorizontal_MessagePage", ui->splitterHorizontal->saveState());
     delete ui;
 }
 
@@ -242,8 +278,6 @@ void MessagePage::on_sendButton_clicked()
     ui->plainTextEdit->clear();
     ui->plainTextEdit->setFocus();
     ui->listWidgetConversation->scrollToBottom();
-    ui->splitter_2->setSizes(QList<int>() << 100 << 200);
-
 }
 
 void MessagePage::on_newButton_clicked()
