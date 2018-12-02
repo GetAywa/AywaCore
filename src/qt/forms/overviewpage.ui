@@ -817,34 +817,14 @@
                 </item>
                 <item>
                  <widget class="QSpinBox" name="spinBoxMiningThreads">
-                  <property name="font">
-                   <font>
-                    <pointsize>13</pointsize>
-                   </font>
-                  </property>
                   <property name="focusPolicy">
                    <enum>Qt::NoFocus</enum>
-                  </property>
-                  <property name="autoFillBackground">
-                   <bool>false</bool>
-                  </property>
-                  <property name="wrapping">
-                   <bool>false</bool>
-                  </property>
-                  <property name="frame">
-                   <bool>false</bool>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
                   </property>
                   <property name="buttonSymbols">
                    <enum>QAbstractSpinBox::NoButtons</enum>
-                  </property>
-                  <property name="specialValueText">
-                   <string notr="true"/>
-                  </property>
-                  <property name="keyboardTracking">
-                   <bool>false</bool>
                   </property>
                   <property name="minimum">
                    <number>1</number>

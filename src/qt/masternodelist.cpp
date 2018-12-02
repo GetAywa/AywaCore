@@ -94,12 +94,16 @@ void MessageSimpleViewDelegate::paint(QPainter *painter, const QStyleOptionViewI
 
     QAbstractTextDocumentLayout::PaintContext ctx;
 
-    // Highlighting text if item is selected
-    if (optionV4.state & QStyle::State_Selected)
-        ctx.palette.setColor(QPalette::Text, optionV4.palette.color(QPalette::Active, QPalette::HighlightedText).lighter(190));
+//    // Highlighting text if item is selected
+//    if (optionV4.state & QStyle::State_Selected)
+//        ctx.palette.setColor(QPalette::Text, optionV4.palette.color(QPalette::Active, QPalette::HighlightedText).lighter(190));
 
 
     QRect textRect = style->subElementRect(QStyle::SE_ItemViewItemText, &optionV4);
+
+    if (optionV4.state & QStyle::State_Selected)
+           painter->fillRect(textRect, optionV4.palette.color(QPalette::Active, QPalette::Highlight).lighter(200));
+
 
     doc.setTextWidth( textRect.width() );
     painter->save();
