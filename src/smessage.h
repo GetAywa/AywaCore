@@ -444,7 +444,7 @@ bool GetIsChannelSubscribed (std::string strChannelAddress);
 bool GetChannelKeys(std::string strAddress, std::string & strPubKey, std::string & strPrivKey);
 std::string GetChannelName(std::string strAddress);
 //void UpdateAddressBook (std::string strAddress, std::string strLabel);
-
+//void ScanBucketsBackground();
 
 
 #endif // SEC_MESSAGE_H

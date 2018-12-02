@@ -16,6 +16,7 @@
 #include <QClipboard>
 #include <QMessageBox>
 #include <QMenu>
+#include <QSettings>
 #include <QStyledItemDelegate>
 #include <QAbstractTextDocumentLayout>
 #include <QPainter>
@@ -54,29 +55,51 @@ void MessageViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &o
     QString background_color("");//QString background_color(index.data(MessageModel::UnreadFlagRole).toBool() ? "background-color:rgb(245, 245, 245);" : "");
     QString html;
     html = "<hr align=\"left\" width=\"100%\">";
-    html += "<p align=\"" + align + "\" style=\""+ background_color + "; margin-top:10px; "
-            +margin_left+margin_right+"margin-bottom:10px\">" + index.data(MessageModel::ShortMessageRole).toString() + "</p>";
-    html += "<p align=\"" + align + "\" style=\"font-size:8px;"+background_color+margin_left+margin_right
-            +"margin-top:1px; margin-bottom:1px\">" + index.data(MessageModel::ReceivedDateRole).toString() + "</p>";
-    html += "<p align=\"" + align + "\" style=\"font-size:8px;"+background_color+margin_left+margin_right
+    html += "<p align=\"" + align + "\" style=\"font-size:9px;"+background_color+margin_left+margin_right
+            +"margin-top:1px; margin-bottom:1px\">" + index.data(MessageModel::SentDateRole).toString() + "</p>";
+    html += "<p align=\"" + align + "\" style=\"font-size:9px;"+background_color+margin_left+margin_right
             +"margin-top:1px; margin-bottom:1px\">" + index.data(MessageModel::LabelRole).toString() + " (";
     html += index.data(MessageModel::FromAddressRole).toString() + ")</p>";
+    html += "<p align=\"" + align + "\" style=\""+ background_color + "; margin-top:10px; "
+            +margin_left+margin_right+"margin-bottom:12px\">" + index.data(MessageModel::ShortMessageRole).toString() + "</p>";
 
     //QString unreadFlagTag = index.data(MessageModel::UnreadFlagRole).toBool() ? "background-color:rgb(245, 245, 245)" : "";
 
     doc.setHtml(html);
 
     // Painting item without text
+
+//    //temp
+//    if (option.state & QStyle::State_Selected)
+//           painter->fillRect(option.rect, option.palette.highlight());
+
+
     optionV4.text = QString();
     style->drawControl(QStyle::CE_ItemViewItem, &optionV4, painter);
 
     QAbstractTextDocumentLayout::PaintContext ctx;
 
-    // Highlighting text if item is selected
-    if (optionV4.state & QStyle::State_Selected)
-        ctx.palette.setColor(QPalette::Text, optionV4.palette.color(QPalette::Active, QPalette::HighlightedText).lighter(190));
+     //Highlighting text if item is selected
+//    if (optionV4.state & QStyle::State_Selected)
+//    ctx.palette.setColor(QPalette::Text, optionV4.palette.color(QPalette::Active, QPalette::HighlightedText).lighter(50));
 
-    //mouse over event test
+
+    //QVariant background = index.data(Qt::BackgroundRole);
+        //if (background.canConvert<QBrush>())
+        //    painter->fillRect(option.rect, background.value<QBrush>());
+        //// the comment below makes selection transparent
+        ////QStyledItemDelegate::paint(painter, option, index);
+        //// To draw a border on selected cells
+//        if(option.state & QStyle::State_Selected) {
+//            painter->save();
+//            QPen pen(Qt::darkBlue, 2, Qt::SolidLine, Qt::SquareCap, Qt::MiterJoin);
+//            int w = pen.width()/2;
+//            painter->setPen(pen);
+//            painter->drawRect(option.rect.adjusted(w,w,-w,-w));
+//            painter->restore();
+//        }
+
+     //mouse over event test
 //    if(optionV4.state & QStyle::State_MouseOver)
 //        ctx.palette.setColor(QPalette::Text, optionV4.palette.color(QPalette::Active, QPalette::HighlightedText));
     /* test*/
@@ -86,8 +109,13 @@ void MessageViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &o
 
     QRect textRect = style->subElementRect(QStyle::SE_ItemViewItemText, &optionV4);
 
+    if (optionV4.state & QStyle::State_Selected)
+           painter->fillRect(textRect, optionV4.palette.color(QPalette::Active, QPalette::Highlight).lighter(200));
+
+
     doc.setTextWidth( textRect.width() );
     painter->save();
+
     painter->translate(textRect.topLeft());
     painter->setClipRect(textRect.translated(-textRect.topLeft()));
     doc.documentLayout()->draw(painter, ctx);
@@ -101,7 +129,7 @@ QSize MessageViewDelegate::sizeHint ( const QStyleOptionViewItem & option, const
     QTextDocument doc;
     doc.setHtml(index.data(MessageModel::HTMLRole).toString());
     doc.setTextWidth(options.rect.width());
-    return QSize(doc.idealWidth(), doc.size().height()+20);
+    return QSize(doc.idealWidth(), doc.size().height()+40);
 }
 
 
@@ -162,10 +190,18 @@ MessagePage::MessagePage(QWidget *parent) :
 
     ui->listWidgetConversation->setVisible(false);
     ui->bnEmoji->setVisible(false);
+    ui->splitterMain->setSizes(QList<int>() << 80<< 100);
+    QSettings settings;
+    ui->splitterMain->restoreState(settings.value("splitterMain_MessagePage").toByteArray());
+    ui->splitterHorizontal->restoreState(settings.value("splitterHorizontal_MessagePage").toByteArray());
+
 }
 
 MessagePage::~MessagePage()
 {
+    QSettings settings;
+    settings.setValue("splitterMain_MessagePage", ui->splitterMain->saveState());
+    settings.setValue("splitterHorizontal_MessagePage", ui->splitterHorizontal->saveState());
     delete ui;
 }
 
@@ -182,7 +218,7 @@ void MessagePage::setModel(MessageModel *model)
     model->proxyModel->setDynamicSortFilter(true);
     model->proxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
     model->proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
-    model->proxyModel->sort(MessageModel::ReceivedDateTime);
+    model->proxyModel->sort(MessageModel::SentDateTime);
     model->proxyModel->setFilterRole(MessageModel::Ambiguous);
     model->proxyModel->setFilterFixedString("true");
 
@@ -191,7 +227,7 @@ void MessagePage::setModel(MessageModel *model)
     model->proxyModelContacts->setDynamicSortFilter(true);
     model->proxyModelContacts->setSortCaseSensitivity(Qt::CaseInsensitive);
     model->proxyModelContacts->setFilterCaseSensitivity(Qt::CaseInsensitive);
-    model->proxyModelContacts->sort(MessageModel::ReceivedDateTime);
+    model->proxyModelContacts->sort(MessageModel::SentDateTime);
     model->proxyModelContacts->setFilterRole(MessageModel::Ambiguous);
     model->proxyModelContacts->setFilterFixedString("true");
 
@@ -242,8 +278,6 @@ void MessagePage::on_sendButton_clicked()
     ui->plainTextEdit->clear();
     ui->plainTextEdit->setFocus();
     ui->listWidgetConversation->scrollToBottom();
-    ui->splitter_2->setSizes(QList<int>() << 100 << 200);
-
 }
 
 void MessagePage::on_newButton_clicked()
@@ -492,7 +526,7 @@ void MessagePage::on_treeWidget_itemSelectionChanged()
     QString filter = item->text(1);
     proxyModelSelectedContactFilter->setFilterRole(false);
     proxyModelSelectedContactFilter->setFilterFixedString("");
-    proxyModelSelectedContactFilter->sort(MessageModel::ReceivedDateTime);
+    proxyModelSelectedContactFilter->sort(MessageModel::SentDateTime);
     proxyModelSelectedContactFilter->setFilterRole(MessageModel::FilterAddressRole);
     proxyModelSelectedContactFilter->setFilterFixedString(filter);
 
@@ -677,4 +711,9 @@ void MessagePage::on_bnEmoji_clicked()
 void MessagePage::on_pushButton_clicked()
 {
    updateContactList();
+}
+
+void MessagePage::on_tableViewConversation_doubleClicked(const QModelIndex &index)
+{
+    QMessageBox::information(0, index.data(Qt::DisplayRole).toString()+" message", index.data(MessageModel::HTMLRole).toString());
 }

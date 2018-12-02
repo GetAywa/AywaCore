@@ -26,9 +26,22 @@
 
 #include <QTimer>
 #include <QMessageBox>
+#include <QSettings>
+#include <QStyledItemDelegate>
+#include <QAbstractTextDocumentLayout>
+#include <QPainter>
+#include <QToolTip>
+
+const QSize FONT_RANGE(4, 40);
+const char fontSizeSettingsKey[] = "msgFontSize";
+
 
 int nFilterVoteRequiredOnly=1;
+int nFilterActiveOnly = 1;
 int nProposalCount=0;
+int GetNextSuperblockTime();
+std::string strSelectedProposalChannelAddress;
+//Dvoid setColorToRow(int rowIndex, QColor color);
 
 int GetOffsetFromUtc()
 {
@@ -41,11 +54,84 @@ int GetOffsetFromUtc()
 #endif
 }
 
+
+class MessageSimpleViewDelegate : public QStyledItemDelegate
+{
+protected:
+    void paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+    QSize sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const;
+};
+
+void MessageSimpleViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+    QStyleOptionViewItemV4 optionV4 = option;
+    initStyleOption(&optionV4, index);
+    QStyle *style = optionV4.widget? optionV4.widget->style() : QApplication::style();
+    QTextDocument doc;
+    QString align(index.data(MessageModel::TypeRole) < 2 ? "right" : "left");//changed 20180831
+    QString margin_left(index.data(MessageModel::TypeRole) < 2 ? "margin-left:250;" :"margin-left:0;");
+    QString margin_right(index.data(MessageModel::TypeRole) < 2 ? "margin-right:0;" :"margin-right:200;");
+    QString background_color("");
+    //QString background_color(index.data(MessageModel::UnreadFlagRole).toBool() ? "background-color:rgb(245, 245, 245);" : "");
+    QString html;
+    html = "<hr align=\"left\" width=\"100%\">";
+    html += "<p align=\"" + align + "\" style=\"font-size:8px;"+background_color+margin_left+margin_right
+            +"margin-top:1px; margin-bottom:1px\">" + index.data(MessageModel::ReceivedDateRole).toString() + "</p>";
+    html += "<p align=\"" + align + "\" style=\"font-size:8px;"+background_color+margin_left+margin_right
+            +"margin-top:1px; margin-bottom:1px\">" + index.data(MessageModel::LabelRole).toString() + " (";
+    html += index.data(MessageModel::FromAddressRole).toString() + ")</p>";
+    html += "<p align=\"" + align + "\" style=\""+ background_color + "; margin-top:10px; "
+            +margin_left+margin_right+"margin-bottom:12px\">" + index.data(MessageModel::ShortMessageRole).toString() + "</p>";
+
+
+    //QString unreadFlagTag = index.data(MessageModel::UnreadFlagRole).toBool() ? "background-color:rgb(245, 245, 245)" : "";
+
+    doc.setHtml(html);
+
+    // Painting item without text
+    optionV4.text = QString();
+    style->drawControl(QStyle::CE_ItemViewItem, &optionV4, painter);
+
+    QAbstractTextDocumentLayout::PaintContext ctx;
+
+//    // Highlighting text if item is selected
+//    if (optionV4.state & QStyle::State_Selected)
+//        ctx.palette.setColor(QPalette::Text, optionV4.palette.color(QPalette::Active, QPalette::HighlightedText).lighter(190));
+
+
+    QRect textRect = style->subElementRect(QStyle::SE_ItemViewItemText, &optionV4);
+
+    if (optionV4.state & QStyle::State_Selected)
+           painter->fillRect(textRect, optionV4.palette.color(QPalette::Active, QPalette::Highlight).lighter(200));
+
+
+    doc.setTextWidth( textRect.width() );
+    painter->save();
+    painter->translate(textRect.topLeft());
+    painter->setClipRect(textRect.translated(-textRect.topLeft()));
+    doc.documentLayout()->draw(painter, ctx);
+    painter->restore();
+}
+
+QSize MessageSimpleViewDelegate::sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const
+{
+    QStyleOptionViewItemV4 options = option;
+    initStyleOption(&options, index);
+    QTextDocument doc;
+    doc.setHtml(index.data(MessageModel::HTMLRole).toString());
+    doc.setTextWidth(options.rect.width());
+    return QSize(doc.idealWidth(), doc.size().height()+40);//20);
+}
+
+
+
 MasternodeList::MasternodeList(const PlatformStyle *platformStyle, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::MasternodeList),
     clientModel(0),
-    walletModel(0)
+    walletModel(0),
+    messageModel(0),
+    msgdelegate (new MessageSimpleViewDelegate())
 {
     ui->setupUi(this);
 
@@ -85,13 +171,13 @@ MasternodeList::MasternodeList(const PlatformStyle *platformStyle, QWidget *pare
     QAction *voteAction = new QAction(tr("Vote YES"), this);
     QAction *voteNoAction = new QAction(tr("Vote NO"), this);
     QAction *voteAbstainAction = new QAction(tr("Vote ABSTAIN"), this);
-    QAction *voteDeleteAction = new QAction(tr("Vote DELETE"), this);
+    //QAction *voteDeleteAction = new QAction(tr("Vote DELETE"), this);
     QAction *showDetailsAction = new QAction(tr("Show details..."), this);
     contextMenuProposalsTab = new QMenu();
     contextMenuProposalsTab->addAction(voteAction);
     contextMenuProposalsTab->addAction(voteNoAction);
     contextMenuProposalsTab->addAction(voteAbstainAction);
-    contextMenuProposalsTab->addAction(voteDeleteAction);
+    //contextMenuProposalsTab->addAction(voteDeleteAction);
     contextMenuProposalsTab->addSeparator();
     contextMenuProposalsTab->addSeparator();
     contextMenuProposalsTab->addAction(showDetailsAction);
@@ -100,7 +186,7 @@ MasternodeList::MasternodeList(const PlatformStyle *platformStyle, QWidget *pare
     connect(voteAction, SIGNAL(triggered()), this, SLOT(voteYesAction()));
     connect(voteNoAction, SIGNAL(triggered()), this, SLOT(voteNoActionSLOT()));
     connect(voteAbstainAction, SIGNAL(triggered()), this, SLOT(voteAbstainActionSLOT()));
-    connect(voteDeleteAction, SIGNAL(triggered()), this, SLOT(voteDeleteActionSLOT()));
+    //connect(voteDeleteAction, SIGNAL(triggered()), this, SLOT(voteDeleteActionSLOT()));
     connect(showDetailsAction, SIGNAL(triggered()), this, SLOT(showDetailsActionSLOT()));
 
 
@@ -114,10 +200,24 @@ MasternodeList::MasternodeList(const PlatformStyle *platformStyle, QWidget *pare
     nTimeFilterUpdated = GetTime();
     updateNodeList();
     updateProposalList();
+    ui->tableWidgetProposals->installEventFilter(this);
+    ui->lineeditMessage->installEventFilter(this);
+    ui->bnFontBigger->setVisible(false);
+    ui->bnFontSmaller->setVisible(false);
+    ui->textBrowser->setVisible(false);
+    ui->label_filter1->setVisible(false);
+    ui->filterProposalLineEdit->setVisible(false);
+
+    QSettings settings;
+    ui->splitterMain->restoreState(settings.value("splitterMain_ProposalTab").toByteArray());
+    ui->splitterHorizontal->restoreState(settings.value("splitterHorizontal_ProposalTab").toByteArray());
 }
 
 MasternodeList::~MasternodeList()
 {
+    QSettings settings;
+    settings.setValue("splitterMain_ProposalTab", ui->splitterMain->saveState());
+    settings.setValue("splitterHorizontal_ProposalTab", ui->splitterHorizontal->saveState());
     delete ui;
 }
 
@@ -163,7 +263,7 @@ void MasternodeList::voteAction(std::string vote, std::string strProposalHash = 
         QModelIndex index = selected.at(0);
         int nSelectedRow = index.row();
         if (strProposalHash == "")
-            strProposalHash = ui->tableWidgetProposals->item(nSelectedRow, 7)->text().toStdString();
+            strProposalHash = ui->tableWidgetProposals->item(nSelectedRow, 8)->text().toStdString();
     }
     uint256 hash;
     //std::string strVote;
@@ -483,7 +583,15 @@ void MasternodeList::updateNodeList()
     updateProposalList();
 }
 
-//force update list after vote.
+//void setColorToRow(int rowIndex, QColor color)
+//{
+//    QTableWidget table = ui->tableWidgetProposals;
+//    for (int j = 0; table.columnCount(); i++){
+//        table.item(rowIndex, j).setBackground(color);
+//    }
+//}
+
+//fForceUpdate - force update list after voting.
 void MasternodeList::updateProposalList(bool fForceUpdate)
 {
 
@@ -513,6 +621,10 @@ void MasternodeList::updateProposalList(bool fForceUpdate)
         if (pGovObj->GetObjectType() != GOVERNANCE_OBJECT_PROPOSAL) continue;
         uint256 hash = pGovObj->GetHash();
         COutPoint mnCollateralOutpoint;
+
+        int nAbsoluteYesVoteCount = pGovObj->GetAbsoluteYesCount(VOTE_SIGNAL_FUNDING);
+
+        bool fCachedFunding = pGovObj->IsSetCachedFunding();
 
         BOOST_FOREACH(CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
             int32_t vout = boost::lexical_cast<uint32_t>(mne.getOutputIndex());
@@ -554,14 +666,27 @@ void MasternodeList::updateProposalList(bool fForceUpdate)
 
         if (!strMyVote.empty() && nFilterVoteRequiredOnly) continue;
 
+        //if (nFilterActiveOnly && (nEnd_epoch-Params().GetConsensus().nBudgetPaymentsCycleBlocks/2 > GetNextSuperblockTime())) continue;
+        if (nFilterActiveOnly && (GetNextSuperblockTime()-nEnd_epoch)>0) continue;
+
+
+
         QTableWidgetItem *proposalNameItem = new QTableWidgetItem(QString::fromStdString(strName));
         QTableWidgetItem *hashItem = new QTableWidgetItem(QString::fromStdString(pGovObj->GetHash().ToString()));
 
         QTableWidgetItem *collateralHashItem = new QTableWidgetItem(QString::fromStdString(pGovObj->GetCollateralHash().ToString()));
-        QTableWidgetItem *creationTimeItem = new QTableWidgetItem(GUIUtil::dateTimeStr(pGovObj->GetCreationTime()));
 
-        QTableWidgetItem *startEpochItem = new QTableWidgetItem(GUIUtil::dateTimeStr(nStart_epoch+Params().GetConsensus().nBudgetPaymentsCycleBlocks/2));
-        QTableWidgetItem *endEpochItem = new QTableWidgetItem(GUIUtil::dateTimeStr(nEnd_epoch-Params().GetConsensus().nBudgetPaymentsCycleBlocks/2));
+        //QTableWidgetItem *creationTimeItem = new QTableWidgetItem(GUIUtil::dateTimeStr(pGovObj->GetCreationTime()));
+        QTableWidgetItem *creationTimeItem = new QTableWidgetItem(QString::fromStdString(DateTimeStrFormat("%Y-%m-%d %H:%M", (pGovObj->GetCreationTime()))));
+        //DateTimeStrFormat("%Y-%m-%d", nStart_epoch)
+
+//        QTableWidgetItem *startEpochItem = new QTableWidgetItem(GUIUtil::dateTimeStr(nStart_epoch+Params().GetConsensus().nBudgetPaymentsCycleBlocks/2));
+//        QTableWidgetItem *endEpochItem = new QTableWidgetItem(GUIUtil::dateTimeStr(nEnd_epoch-Params().GetConsensus().nBudgetPaymentsCycleBlocks/2));
+
+        QTableWidgetItem *startEpochItem = new QTableWidgetItem(QString::fromStdString(DateTimeStrFormat("%Y-%m-%d %H:%M", nStart_epoch+Params().GetConsensus().nBudgetPaymentsCycleBlocks/2)));
+        QTableWidgetItem *endEpochItem = new QTableWidgetItem(QString::fromStdString(DateTimeStrFormat("%Y-%m-%d %H:%M", nEnd_epoch-Params().GetConsensus().nBudgetPaymentsCycleBlocks/2)));
+
+
         QTableWidgetItem *lenghtEpochItem = new QTableWidgetItem(QString::number((nEnd_epoch-nStart_epoch)
                                                                                  / (Params().GetConsensus().nPowTargetSpacing
                                                                                     * Params().GetConsensus().nBudgetPaymentsCycleBlocks)));
@@ -569,7 +694,7 @@ void MasternodeList::updateProposalList(bool fForceUpdate)
         QTableWidgetItem *paymentAddressItem = new QTableWidgetItem(QString::fromStdString(strPayment_address));
         QTableWidgetItem *voteSignalItem = new QTableWidgetItem(QString::fromStdString(strMyVote));
 
-
+        QTableWidgetItem *absoluteYesVotes = new QTableWidgetItem(QString::number((nAbsoluteYesVoteCount)));
 
 //        if (strCurrentFilter != "")
 //        {
@@ -587,16 +712,18 @@ void MasternodeList::updateProposalList(bool fForceUpdate)
         CBitcoinAddress paymentAddress(strPayment_address);
         ui->tableWidgetProposals->setItem(0, 0, proposalNameItem);
         ui->tableWidgetProposals->setItem(0, 1, creationTimeItem);
-        ui->tableWidgetProposals->setItem(0, 2, paymentAddressItem);
-        ui->tableWidgetProposals->setItem(0, 3, paymentAmountItem);
-        ui->tableWidgetProposals->setItem(0, 4, startEpochItem);
-        ui->tableWidgetProposals->setItem(0, 5, lenghtEpochItem);
-        ui->tableWidgetProposals->setItem(0, 6, endEpochItem);
+        ui->tableWidgetProposals->setItem(0, 2, absoluteYesVotes);
+        ui->tableWidgetProposals->setItem(0, 3, paymentAddressItem);
+        ui->tableWidgetProposals->setItem(0, 4, paymentAmountItem);
+        ui->tableWidgetProposals->setItem(0, 5, startEpochItem);
+        ui->tableWidgetProposals->setItem(0, 6, lenghtEpochItem);
+        ui->tableWidgetProposals->setItem(0, 7, endEpochItem);
 
-        ui->tableWidgetProposals->setItem(0, 7, hashItem);
-        ui->tableWidgetProposals->setItem(0, 8, collateralHashItem);
-        ui->tableWidgetProposals->setItem(0, 9, voteSignalItem);
+        ui->tableWidgetProposals->setItem(0, 8, hashItem);
+        ui->tableWidgetProposals->setItem(0, 9, collateralHashItem);
+        ui->tableWidgetProposals->setItem(0, 10, voteSignalItem);
 
+        //set font bold for own proposals
         if (IsMine(*pwalletMain, paymentAddress.Get()))
         {
             //ui->tableWidgetProposals->item(0,0)->setBackground(Qt::red);
@@ -605,7 +732,25 @@ void MasternodeList::updateProposalList(bool fForceUpdate)
             ui->tableWidgetProposals->item(0,0)->setFont(font);
             //ui->tableWidgetProposals->item(0,2)->setBackground(QColor::fromRgb(255,0,0));
         }
+
+        //green color for approved proposals
+        if (fCachedFunding){
+            ui->tableWidgetProposals->item(0,0)->setBackground(QColor::fromRgb(168, 247, 234));
+            ui->tableWidgetProposals->item(0,1)->setBackground(QColor::fromRgb(168, 247, 234));
+            ui->tableWidgetProposals->item(0,2)->setBackground(QColor::fromRgb(168, 247, 234));
+            ui->tableWidgetProposals->item(0,3)->setBackground(QColor::fromRgb(168, 247, 234));
+            ui->tableWidgetProposals->item(0,4)->setBackground(QColor::fromRgb(168, 247, 234));
+            ui->tableWidgetProposals->item(0,5)->setBackground(QColor::fromRgb(168, 247, 234));
+            ui->tableWidgetProposals->item(0,6)->setBackground(QColor::fromRgb(168, 247, 234));
+            //setForeground
+
+
+            //setColorToRow(0, QColor::fromRgb(0,200,100));
+        }
     }
+
+
+
     //new proposal notify if voting power//TODO
     //if (masternodeConfig.getCount()>0)
 
@@ -627,6 +772,16 @@ void MasternodeList::on_filterLineEdit_textChanged(const QString &strFilterIn)
     ui->countLabel->setText(QString::fromStdString(strprintf("Please wait... %d", MASTERNODELIST_FILTER_COOLDOWN_SECONDS)));
 }
 
+
+void MasternodeList::on_filterProposalLineEdit_textChanged(const QString &strFilterIn)
+{
+    strCurrentProposalFilter = strFilterIn;
+    nTimeFilterUpdated = GetTime();
+    fFilterProposalUpdated = true;
+    ui->countLabel->setText(QString::fromStdString(strprintf("Please wait... %d", MASTERNODELIST_FILTER_COOLDOWN_SECONDS)));
+}
+
+
 void MasternodeList::showDetailsActionSLOT()
 {
     std::string strProposalHash;
@@ -640,7 +795,7 @@ void MasternodeList::showDetailsActionSLOT()
 
         QModelIndex index = selected.at(0);
         int nSelectedRow = index.row();
-        strProposalHash = ui->tableWidgetProposals->item(nSelectedRow, 7)->text().toStdString();
+        strProposalHash = ui->tableWidgetProposals->item(nSelectedRow, 8)->text().toStdString();
         NewProposalDialog* dlg_NewProposalDialog = new NewProposalDialog(strProposalHash);//strProposalHash);//selection.at(0));
         dlg_NewProposalDialog->setWalletModel(walletModel);
         dlg_NewProposalDialog->showNormal();
@@ -799,4 +954,359 @@ void MasternodeList::on_checkboxProposaslToVote_stateChanged(int arg1)
 void MasternodeList::on_tableWidgetProposals_itemDoubleClicked()//QTableWidgetItem *item)
 {
     showDetailsActionSLOT();
+}
+
+int GetSuperblockTime()
+{
+    //return 0;
+    // Compute last/next superblock
+    int nLastSuperblock, nNextSuperblock;
+
+    // Get current block height
+    int nBlockHeight = 0;
+    {
+        LOCK(cs_main);
+        nBlockHeight = (int)chainActive.Height();
+    }
+   // getgovernanceinfo();
+
+    // Get chain parameters
+    int nSuperblockStartBlock = Params().GetConsensus().nSuperblockStartBlock;
+    int nSuperblockCycle = Params().GetConsensus().nSuperblockCycle;
+
+    // Get first superblock
+    int nFirstSuperblockOffset = (nSuperblockCycle - nSuperblockStartBlock % nSuperblockCycle) % nSuperblockCycle;
+    int nFirstSuperblock = nSuperblockStartBlock + nFirstSuperblockOffset;
+
+    if(nBlockHeight < nFirstSuperblock){
+        nLastSuperblock = 0;
+        nNextSuperblock = nFirstSuperblock;
+    } else {
+        nLastSuperblock = nBlockHeight - nBlockHeight % nSuperblockCycle;
+        nNextSuperblock = nLastSuperblock + nSuperblockCycle;
+    }
+
+
+    return nNextSuperblock*Params().GetConsensus().nPowTargetSpacing
+            +chainActive.Genesis()->GetBlockTime();
+
+}
+
+void MasternodeList::on_cbActiveOnly_stateChanged(int arg1)
+{
+    nFilterActiveOnly = arg1;
+    updateProposalList(true);
+}
+
+void MasternodeList::on_tableWidgetProposals_itemActivated()
+{
+}
+
+void MasternodeList::on_tableWidgetProposals_itemSelectionChanged()
+{
+    //ui->textBrowser->setVisible(false);
+//    labelProposalAmountAndDays
+//    labelProposalFromToDate
+//    labelProposalName
+//    labelTotalProposalBudget
+//    ProposalDescription_plainTextEdit
+//    bnVoteAbstain
+//    bnVoteNo
+//    bnVoteYes
+//    bnSendMessage
+//    lineeditMessage
+
+    std::string strProposalHash;
+    {
+        LOCK(cs_gobjectslist);
+        // Find selected proposal hash
+        QItemSelectionModel* selectionModel = ui->tableWidgetProposals->selectionModel();
+        QModelIndexList selected = selectionModel->selectedRows();
+
+        if(selected.count() == 0) return;
+
+        QModelIndex index = selected.at(0);
+        int nSelectedRow = index.row();
+        strProposalHash = ui->tableWidgetProposals->item(nSelectedRow, 8)->text().toStdString();
+        ui->ProposalHash_lineedit->setText(strProposalHash.c_str());
+        uint256 hash = uint256S(strProposalHash);
+        CGovernanceObject* pGovObj = governance.FindGovernanceObject(hash);
+
+        if (!pGovObj) return; //only GOVERNANCE_OBJECT_PROPOSAL can be opened
+        UniValue objJSON = pGovObj->GetJSONObject();
+        std::string strName = objJSON["name"].get_str();
+        //std::string strWindowTitle = "Aywa Core - Proposal "+strName;
+        int nEnd_epoch = objJSON["end_epoch"].get_int();
+        //std::string strPayment_address = objJSON["payment_address"].get_str();
+        int nPayment_amount = objJSON["payment_amount"].get_int();
+        int nStart_epoch = objJSON["start_epoch"].get_int();
+        std::string strUrl = objJSON["url"].get_str();
+        std::string strProposalChannelAddress, strProposalChannelPrivKey, strProposalChannelPubKey;
+        try{//some proposals dont have a description
+            strProposalChannelAddress = objJSON["smsg_addr"].get_str();
+            strProposalChannelPubKey = objJSON["smsg_pubkey"].get_str();
+            strProposalChannelPrivKey = objJSON["smsg_privkey"].get_str();
+            std::string strDescription = objJSON["description"].get_str();
+            std::vector<unsigned char> v = ParseHex(strDescription);
+            std::string strProposalDescription(v.begin(), v.end());
+            ui->ProposalDescription_plainTextEdit->setHtml(strProposalDescription.c_str());
+        }
+        catch(std::exception& e)
+        {
+            ui->ProposalDescription_plainTextEdit->setPlainText(e.what());
+        };
+
+        ui->labelProposalName->setText(strName.c_str());
+        ui->ProposalHash_lineedit->setReadOnly(true);
+        //ui->ProposalHash_lineedit->
+
+        ui->labelProposalFromToDate->setText(QString::fromStdString(DateTimeStrFormat("%d/%m/%Y", nStart_epoch)+" - "+DateTimeStrFormat("%d/%m/%Y", nEnd_epoch)));
+
+        ui->ProposalDescription_plainTextEdit->setReadOnly(true);
+
+        ui->labelProposalAmountAndDays->setText(QString::number(nPayment_amount) + QString::fromStdString(" AYWA for ") + QString::number((nEnd_epoch - nStart_epoch)/86400) + QString::fromStdString(" day(s)"));
+
+        ui->labelTotalProposalBudget->setText(QString::fromStdString("Total budget: ") + QString::number(nPayment_amount*((nEnd_epoch - nStart_epoch)/86400)) + QString::fromStdString(" AYWA"));
+        //ui->ProposalDescription_plainTextEdit->setText(strPayment_address.c_str());
+        //ui->lineeditPaymentAddress->setReadOnly(true);
+        //ui->dateeditPaymentStartDate->setDateTime(QDateTime::fromTime_t(nStart_epoch+43200));// + Params().GetConsensus().nBudgetPaymentsCycleBlocks * Params().GetConsensus().nPowTargetSpacing / 2));
+        //ui->dateeditPaymentStartDate->setEnabled(false);
+        //ui->dateeditPaymentEndDate->setDateTime(QDateTime::fromTime_t(nEnd_epoch-43200));// - Params().GetConsensus().nBudgetPaymentsCycleBlocks * Params().GetConsensus().nPowTargetSpacing / 2));
+        //ui->dateeditPaymentEndDate->setEnabled(false);
+        //ui->spinboxAmount->setValue(nPayment_amount);
+        //ui->spinboxAmount->setEnabled(false);
+        //const Consensus::Params& consensusParams = Params().GetConsensus();
+        //const int nBudgetPaymentsCycleBlocks = consensusParams.nBudgetPaymentsCycleBlocks;
+        //ui->spinboxPeriod->setValue((nEnd_epoch - nStart_epoch)/86400);
+
+        //ui->spinboxPeriod->setEnabled(false);
+
+        //ui->lineeditProposalUrl->setText(strUrl.c_str());
+        //ui->lineeditProposalUrl->setReadOnly(true);
+
+        //ui->lineeditPrivateChatAddress->setText(strProposalChannelAddress.c_str());
+        //ui->lineeditPrivateChatPubKey->setText(strProposalChannelPubKey.c_str());
+        //ui->lineeditChannelPrivKey->setText(strProposalChannelPrivKey.c_str());
+
+        //ui->bnJoinChannel->setEnabled(!GetIsChannelSubscribed(ui->lineeditPrivateChatAddress->text().toStdString()));
+
+        //ui->lineeditPrivateChatAddress->setReadOnly(true);
+        //ui->pushbuttonCheck->setEnabled(false);
+        //ui->toolbuttonSelectPaymentAddress->setEnabled(false);
+
+        if (!GetIsChannelSubscribed (strProposalChannelAddress))
+            SetChannelSubscribtion(strProposalChannelAddress, strProposalChannelPubKey,
+                                   strProposalChannelPrivKey, std::string("PR-") + strName);
+        QListView * listViewConversation = ui->listViewConversation;
+        auto proxyModelSelectedContactFilter = new QSortFilterProxyModel(this);
+        proxyModelSelectedContactFilter->setSourceModel(messageModel);
+        QString filter = QString::fromStdString(strProposalChannelAddress);
+        proxyModelSelectedContactFilter->setFilterRole(false);
+        proxyModelSelectedContactFilter->setFilterFixedString("");
+        proxyModelSelectedContactFilter->sort(MessageModel::SentDateTime);
+        proxyModelSelectedContactFilter->setFilterRole(MessageModel::FilterAddressRole);
+        proxyModelSelectedContactFilter->setFilterFixedString(filter);
+        listViewConversation->setItemDelegate(msgdelegate);
+        listViewConversation->setModel(proxyModelSelectedContactFilter);
+        listViewConversation->scrollToBottom();
+
+        strSelectedProposalChannelAddress = strProposalChannelAddress;
+    }
+
+    if (walletModel->getEncryptionStatus() == WalletModel::Locked || walletModel->getEncryptionStatus() == WalletModel::UnlockedForMixingOnly) {
+        //ui->lineeditProposalName->setFocus();
+        QToolTip::showText(ui->tableWidgetProposals->mapToGlobal(QPoint()), tr("Unlock wallet to use a proposal chat."));
+        return;
+    }
+
+
+    //ui->lineeditMessage->setFocus();
+}
+
+
+void MasternodeList::fontBigger()
+{
+    setFontSize(msgFontSize+1);
+}
+
+void MasternodeList::fontSmaller()
+{
+    setFontSize(msgFontSize-1);
+}
+
+void MasternodeList::setFontSize(int newSize)
+{
+    QSettings settings;
+
+    //don't allow a insane font size
+    if (newSize < FONT_RANGE.width() || newSize > FONT_RANGE.height())
+        return;
+
+    // temp. store content
+    QString str = ui->ProposalDescription_plainTextEdit->toHtml();
+
+    // replace font tags size in current content
+    str.replace(QString("font-size:%1pt").arg(msgFontSize), QString("font-size:%1pt").arg(newSize));
+
+    // store the new font size
+    msgFontSize = newSize;
+    settings.setValue(fontSizeSettingsKey, msgFontSize);
+
+    // clear console (reset icon sizes, default stylesheet) and re-add the content
+    //float oldPosFactor = 1.0 / ui->ProposalDescription_plainTextEdit->verticalScrollBar()->maximum() * ui->ProposalDescription_plainTextEdit->verticalScrollBar()->value();
+    //clear(false);
+    ui->ProposalDescription_plainTextEdit->setHtml(str);
+    //ui->ProposalDescription_plainTextEdit->verticalScrollBar()->setValue(oldPosFactor * ui->ProposalDescription_plainTextEdit->verticalScrollBar()->maximum());
+}
+
+void MasternodeList::on_bnFontSmaller_clicked()
+{
+    fontBigger();
+}
+
+void MasternodeList::on_bnFontBigger_clicked()
+{
+    fontSmaller();
+}
+
+
+
+void MasternodeList::on_bnVoteYes_clicked()
+{
+  voteYesAction();
+}
+
+void MasternodeList::on_bnVoteNo_clicked()
+{
+    voteNoActionSLOT();
+}
+
+void MasternodeList::on_bnVoteAbstain_clicked()
+{
+    voteAbstainActionSLOT();
+}
+
+void MasternodeList::on_bnSendMessage_clicked()
+{
+
+
+    if(!messageModel)
+        return;
+
+    if (ui->lineeditMessage->text().isEmpty())
+        return;
+
+//   if (ui->tableWidgetProposals->selectedItems().size() == 0)
+//       return;
+
+    std::string sError;
+    std::string sendTo  = strSelectedProposalChannelAddress;
+    std::string message = ui->lineeditMessage->text().toStdString();
+
+    std::string strSenderAccountAddress;
+    for (std::vector<SecMsgAddress>::iterator it = smsgAddresses.begin(); it != smsgAddresses.end(); ++it)
+    {
+        CBitcoinAddress coinAddress(it->sAddress);
+        strSenderAccountAddress = coinAddress.ToString();
+        break;
+    }
+
+    if (sendTo.empty() || message.empty() || strSenderAccountAddress.empty())
+        return;
+
+    if (SecureMsgSend(strSenderAccountAddress, sendTo, message, sError) != 0)
+    {
+        QMessageBox::warning(NULL, tr("Send Secure Message"),
+            tr("Send failed: %1.").arg(sError.c_str()),
+            QMessageBox::Ok, QMessageBox::Ok);
+
+        return;
+    };
+    ui->lineeditMessage->clear();
+    ui->lineeditMessage->setFocus();
+}
+
+void MasternodeList::setMessageModel(MessageModel *messageModel)
+{
+    this->messageModel = messageModel;
+    if(!messageModel)
+        return;
+
+    //if (model->proxyModel)
+    //    delete model->proxyModel;
+    messageModel->proxyModel = new QSortFilterProxyModel(this);
+    messageModel->proxyModel->setSourceModel(messageModel);
+    messageModel->proxyModel->setDynamicSortFilter(true);
+    messageModel->proxyModel->setSortCaseSensitivity(Qt::CaseInsensitive);
+    messageModel->proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
+    messageModel->proxyModel->sort(MessageModel::SentDateTime);
+    messageModel->proxyModel->setFilterRole(MessageModel::Ambiguous);
+    messageModel->proxyModel->setFilterFixedString("true");
+
+    //connect (messageModel, SIGNAL(updateMessagePage()), this, SLOT(updateMessages()));
+    connect(messageModel, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(incomingMessage()));
+
+
+}
+
+bool MasternodeList::eventFilter(QObject* obj, QEvent *event)
+{
+    if (obj != ui->lineeditMessage)
+        if (obj !=ui->tableWidgetProposals)
+        return QWidget::eventFilter(obj, event);
+
+    if(event->type() == QEvent::KeyPress) // Special key handling
+    {
+        QKeyEvent *keyevt = static_cast<QKeyEvent*>(event);
+        int key = keyevt->key();
+        Qt::KeyboardModifiers mod = keyevt->modifiers();
+        switch(key)
+        {
+        case Qt::Key_Up:
+            return QWidget::eventFilter(obj, event);
+            //if(obj == ui->lineEdit) { browseHistory(-1); return true; }
+            break;
+        case Qt::Key_Down:
+            return QWidget::eventFilter(obj, event);
+            //if(obj == ui->lineEdit) { browseHistory(1); return true; }
+            break;
+        case Qt::Key_PageUp: /* pass paging keys to messages widget */
+        case Qt::Key_PageDown:
+            //if(obj == ui->lineEdit)
+            //{
+            //    QApplication::postEvent(ui->messagesWidget, new QKeyEvent(*keyevt));
+            //    return true;
+            //}
+            break;
+        case Qt::Key_Return:
+        case Qt::Key_Enter:
+            // forward these events
+            if (!mod && obj == ui->lineeditMessage) {
+                event->ignore();
+                //sendMessage();
+                ui->bnSendMessage->animateClick();
+                return true;
+            }
+            break;
+        default:
+           {
+                ui->lineeditMessage->setFocus();
+                //TODO:Skipping 1 symbol
+                //return QWidget::eventFilter(ui->lineeditMessage, event);
+                return false;
+            }
+        }
+    }
+    return QWidget::eventFilter(obj, event);
+}
+
+void MasternodeList::on_listViewConversation_doubleClicked(const QModelIndex &index)
+{
+    QMessageBox::information(0, index.data(Qt::DisplayRole).toString()+" message", index.data(MessageModel::HTMLRole).toString());
+
+}
+
+void MasternodeList::incomingMessage()
+{
+    ui->listViewConversation->scrollToBottom();
 }

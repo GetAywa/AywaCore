@@ -1,6 +1,7 @@
 #include "guiutil.h"
 #include "guiconstants.h"
 #include "bitcoinunits.h"
+#include "init.h"
 #include "optionsmodel.h"
 #include "walletmodel.h"
 #include "messagemodel.h"
@@ -186,8 +187,14 @@ public:
             memcpy(&vchKey[2],  &psmsg->timestamp, 8);
             memcpy(&vchKey[10], &smsgStored.vchMessage[SMSG_HDR_LEN], 8);    // sample
 
+
+
             addMessageEntry(MessageTableEntry(vchKey,
-                                              GetIsChannelSubscribed(smsgStored.sAddrTo)|GetIsChannelSubscribed(msg.sFromAddress) ? MessageTableEntry::Channel : MessageTableEntry::Received,
+                                              //GetIsChannelSubscribed(smsgStored.sAddrTo)|GetIsChannelSubscribed(msg.sFromAddress) ? MessageTableEntry::Channel : MessageTableEntry::Received,
+                                              GetIsChannelSubscribed(smsgStored.sAddrTo)|GetIsChannelSubscribed(msg.sFromAddress) ?
+                                                  (IsMine(*pwalletMain, CBitcoinAddress(smsgStored.sAddrTo).Get()) |
+                                                     IsMine(*pwalletMain, CBitcoinAddress(msg.sFromAddress).Get()) ?
+                                                      MessageTableEntry::ChannelSent : MessageTableEntry::Channel ): MessageTableEntry::Received,
                                               //MessageTableEntry::Received,
                                               smsgStored.status == SMSG_MASK_UNREAD ? true : false,
                                               label,
@@ -225,6 +232,9 @@ public:
             memcpy(&vchKey[0],  sPrefix.data(),  2);
             memcpy(&vchKey[2],  &psmsg->timestamp, 8);
             memcpy(&vchKey[10], &smsgStored.vchMessage[SMSG_HDR_LEN], 8);    // sample
+
+            if (GetIsChannelSubscribed(smsgStored.sAddrTo)|GetIsChannelSubscribed(msg.sFromAddress))
+                return;
 
             addMessageEntry(MessageTableEntry(vchKey,
                                               //MessageTableEntry::Sent,

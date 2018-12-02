@@ -162,6 +162,7 @@ void WalletView::setWalletModel(WalletModel *walletModel)
     QSettings settings;
     if (settings.value("fShowMasternodesTab").toBool()) {
         masternodeListPage->setWalletModel(walletModel);
+        masternodeListPage->setMessageModel(walletModel->getMessageModel());
     }
     receiveCoinsPage->setModel(walletModel);
     sendCoinsPage->setModel(walletModel);
