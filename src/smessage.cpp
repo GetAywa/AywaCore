@@ -5258,7 +5258,7 @@ void SetChannelSubscribtion(std::string strAddress, std::string strPubKey,
 //    for (int i = 0; i < nThreads; i++)
 //        scanBucketsThreads->create_thread(boost::bind(&SecureMsgScanBuckets));
 
-    SecureMsgScanBuckets();
+//    SecureMsgScanBuckets();
 
 }
 
