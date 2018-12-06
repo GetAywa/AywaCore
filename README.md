@@ -21,7 +21,7 @@ Proposal Creation
 
 Voting Process
 
-![www.getaywa.org](http://getaywa.org/wp-content/uploads/2018/10/proposal_page.png)￼
+![www.getaywa.org](https://clip2net.com/clip/m584182/3f845-47396877_316776972497349_4020303158168256512_n-157kb.png?nocache=1)￼
 
 Messages and Public Channels
 
