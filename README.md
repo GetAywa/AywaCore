@@ -13,7 +13,7 @@ Look at some AywaCore features:
 
 Overview Page
 
-![](http://getaywa.org/wp-content/uploads/2018/09/preview_video.png)
+![www.getaywa.org](http://getaywa.org/wp-content/uploads/2018/09/preview_video.png)
 
 Proposal Creation
 ￼
@@ -21,16 +21,16 @@ Proposal Creation
 
 Voting Process
 
-![](http://getaywa.org/wp-content/uploads/2018/10/proposal_page.png)￼
+![www.getaywa.org](http://getaywa.org/wp-content/uploads/2018/10/proposal_page.png)￼
 
 Messages and Public Channels
 
-![](http://getaywa.org/wp-content/uploads/2018/10/messagges_page.png)
-![](http://getaywa.org/wp-content/uploads/2018/10/smsg3.png)
+![www.getaywa.org](https://clip2net.com/clip/m584182/3f845-47396877_316776972497349_4020303158168256512_n-157kb.png?nocache=1)
+![www.getaywa.org](http://getaywa.org/wp-content/uploads/2018/10/smsg3.png)
 
 Reward for Proposal
 ￼
-![](http://getaywa.org/wp-content/uploads/2018/10/reward_for_proposal.png)
+![www.getaywa.org](http://getaywa.org/wp-content/uploads/2018/10/reward_for_proposal.png)
 
 License
 -------
