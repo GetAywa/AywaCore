@@ -621,7 +621,7 @@ void ThreadSecureMsg()
 //            }
 
 
-            for (std::map<int64_t, SecMsgBucket>::iterator it(smsgBuckets.begin()); it != smsgBuckets.end(); it++)//it++)
+            for (std::map<int64_t, SecMsgBucket>::iterator it(smsgBuckets.begin()); it != smsgBuckets.end();)// it++)//it++)
             {
                 if (fDebugSmsg)
                     LogPrint("smessage", "Checking bucket %d, size %u \n", it->first, it->second.setTokens.size());
@@ -670,6 +670,7 @@ void ThreadSecureMsg()
                         }; // if (it->second.nLockCount == 0)
 
                     }; // ! if (it->first < cutoffTime)
+                ++it;
             };
         } // cs_smsg
         //        }

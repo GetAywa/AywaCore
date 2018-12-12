@@ -24,7 +24,8 @@ public:
     enum HelpMode {
         about,
         cmdline,
-        pshelp
+        pshelp,
+        proposal_help
     };
 
     explicit HelpMessageDialog(QWidget *parent, HelpMode helpMode);
