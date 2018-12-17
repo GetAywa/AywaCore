@@ -262,5 +262,11 @@ To build executables for ARM:
     ./configure --prefix=$PWD/depends/arm-linux-gnueabihf --enable-glibc-back-compat --enable-reduce-exports LDFLAGS=-static-libstdc++
     make
 
+Ubuntu 16_04:
+
+cd depends && make -j4
+cd .. && ./autogen.sh
+./configure --prefix=/projects/AywaCore/depends/x86_64-pc-linux-gnu --disable-tests --disable-qtests --disable-bench CXXFLAGS="-ggdb" #clear CXXFLAG for release
+make -j4
 
 For further documentation on the depends system see [README.md](../depends/README.md) in the depends directory.
