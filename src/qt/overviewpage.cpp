@@ -35,8 +35,8 @@
 
 #define ICON_OFFSET 16
 #define DECORATION_SIZE 54
-#define NUM_ITEMS 3
-#define NUM_ITEMS_ADV 5
+#define NUM_ITEMS 5
+#define NUM_ITEMS_ADV 6
 
 class TxViewDelegate : public QAbstractItemDelegate
 {
@@ -192,6 +192,16 @@ OverviewPage::OverviewPage(const PlatformStyle *platformStyle, QWidget *parent) 
     ui->bnGenerate->setText((GetBoolArg("-gen", false) ? "Stop Mining" :"Start Mining"));
 
     ui->labelAvailableCores->setText(QString::number(GetNumCores()));
+    ui->horizontalSlider->setMaximum(GetNumCores());
+
+    ui->labelThreads->setVisible(false);
+    ui->toolButtonMinus->setVisible(false);
+    ui->toolButtonPlus->setVisible(false);
+    ui->spinBoxMiningThreads->setVisible(false);
+    ui->labelAvailableCores->setVisible(false);
+    ui->labelAvailableCoresText->setVisible(false);
+    ui->bnGenerate->setVisible(false);
+
     updateMiningInfo();
 
 }
@@ -701,13 +711,15 @@ void OverviewPage::toggleGenerate(bool fKeepCurrentGenerateStatus)
     UniValue params (UniValue::VARR);
     UniValue uCurrentGenerateSetting (UniValue::VBOOL);
 
-    uCurrentGenerateSetting.setBool(fKeepCurrentGenerateStatus ? fMiningEnabled : !fMiningEnabled);// ? true:false);
-                                    //getgenerate(params, false).getBool());
-                                    //GetBoolArg("-gen", false) ? true:false);
+    //uCurrentGenerateSetting.setBool(fKeepCurrentGenerateStatus ? fMiningEnabled : !fMiningEnabled);// ? true:false);
+
+    uCurrentGenerateSetting.setBool(ui->horizontalSlider->value());
+
     params.push_back(uCurrentGenerateSetting);
     params.push_back(ui->spinBoxMiningThreads->value());
     setgenerate(params, false);
     params.clear();
+    updateMiningInfo();
 }
 
 void OverviewPage::updateMiningInfo()
@@ -715,7 +727,8 @@ void OverviewPage::updateMiningInfo()
     bool fMiningEnabled = GetBoolArg("-gen", false);
     if (!fMiningEnabled){
         ui->bnGenerate->setText(tr("Start Mining"));
-        ui->labelTotalHashRate->setText("0");
+        ui->labelTotalHashRate->setText("");
+        ui->labelHashrate->setText("not started");
         return;
     }
     else
@@ -723,11 +736,21 @@ void OverviewPage::updateMiningInfo()
 
     ui->bnGenerate->setText(tr("Stop Mining"));
     ui->labelTotalHashRate->setText(QString::number(GetCurrentHashRate()));
+    ui->labelHashrate->setText("hash/sec");
+
 }
 
 void OverviewPage::on_spinBoxMiningThreads_valueChanged(int arg1)
 {
-    if (!(GetBoolArg("-gen", false)))
-        return;
+    //if (!(GetBoolArg("-gen", false)))
+    //    return;
     toggleGenerate(true);
+}
+
+void OverviewPage::on_horizontalSlider_valueChanged(int value)
+{
+    //if (!(GetBoolArg("-gen", false)))
+    //    return;
+    toggleGenerate(true);
+
 }

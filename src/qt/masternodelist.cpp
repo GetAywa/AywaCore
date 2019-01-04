@@ -170,14 +170,14 @@ MasternodeList::MasternodeList(const PlatformStyle *platformStyle, QWidget *pare
     ui->tableWidgetProposals->setContextMenuPolicy(Qt::CustomContextMenu);
     QAction *voteAction = new QAction(tr("Vote YES"), this);
     QAction *voteNoAction = new QAction(tr("Vote NO"), this);
-    QAction *voteAbstainAction = new QAction(tr("Vote ABSTAIN"), this);
-    //QAction *voteDeleteAction = new QAction(tr("Vote DELETE"), this);
+    QAction *voteAbstainAction = new QAction(tr("Cancel Votes"), this);
+    QAction *voteDeleteAction = new QAction(tr("Junk Proposal"), this);
     QAction *showDetailsAction = new QAction(tr("Show details..."), this);
     contextMenuProposalsTab = new QMenu();
     contextMenuProposalsTab->addAction(voteAction);
     contextMenuProposalsTab->addAction(voteNoAction);
     contextMenuProposalsTab->addAction(voteAbstainAction);
-    //contextMenuProposalsTab->addAction(voteDeleteAction);
+    contextMenuProposalsTab->addAction(voteDeleteAction);
     contextMenuProposalsTab->addSeparator();
     contextMenuProposalsTab->addSeparator();
     contextMenuProposalsTab->addAction(showDetailsAction);
@@ -186,7 +186,7 @@ MasternodeList::MasternodeList(const PlatformStyle *platformStyle, QWidget *pare
     connect(voteAction, SIGNAL(triggered()), this, SLOT(voteYesAction()));
     connect(voteNoAction, SIGNAL(triggered()), this, SLOT(voteNoActionSLOT()));
     connect(voteAbstainAction, SIGNAL(triggered()), this, SLOT(voteAbstainActionSLOT()));
-    //connect(voteDeleteAction, SIGNAL(triggered()), this, SLOT(voteDeleteActionSLOT()));
+    connect(voteDeleteAction, SIGNAL(triggered()), this, SLOT(voteDeleteActionSLOT()));
     connect(showDetailsAction, SIGNAL(triggered()), this, SLOT(showDetailsActionSLOT()));
 
 
@@ -202,11 +202,11 @@ MasternodeList::MasternodeList(const PlatformStyle *platformStyle, QWidget *pare
     updateProposalList();
     ui->tableWidgetProposals->installEventFilter(this);
     ui->lineeditMessage->installEventFilter(this);
-    ui->bnFontBigger->setVisible(false);
-    ui->bnFontSmaller->setVisible(false);
-    ui->textBrowser->setVisible(false);
-    ui->label_filter1->setVisible(false);
-    ui->filterProposalLineEdit->setVisible(false);
+    //ui->bnFontBigger->setVisible(false);
+    //ui->bnFontSmaller->setVisible(false);
+    //ui->textBrowser->setVisible(false);
+    //ui->label_filter1->setVisible(false);
+    //ui->filterProposalLineEdit->setVisible(false);
 
     QSettings settings;
     ui->splitterMain->restoreState(settings.value("splitterMain_ProposalTab").toByteArray());
@@ -355,13 +355,14 @@ void MasternodeList::voteAction(std::string vote, std::string strProposalHash = 
     returnObj.push_back(Pair("overall", strprintf("Voted successfully %d time(s) and failed %d time(s).", nSuccessful, nFailed)));
     returnObj.push_back(Pair("detail", resultsObj));
 
-
-    QMessageBox msgBox;
-    msgBox.setText(QString::fromStdString(returnObj[0].get_str()));//  ..get_str()));
-    //msgBox.setInformativeText(strErrorMessages.c_str());
-    msgBox.setIcon(QMessageBox::Information);
-    msgBox.exec();
-    updateProposalList(true);
+    if (vote != "delete"){
+        QMessageBox msgBox;
+        msgBox.setText(QString::fromStdString(returnObj[0].get_str()));//  ..get_str()));
+        //msgBox.setInformativeText(strErrorMessages.c_str());
+        msgBox.setIcon(QMessageBox::Information);
+        msgBox.exec();
+        updateProposalList(true);
+    }
 }
 
 void MasternodeList::StartAlias(std::string strAlias)
@@ -822,6 +823,7 @@ void MasternodeList::voteAbstainActionSLOT()
 void MasternodeList::voteDeleteActionSLOT()
 {
     voteAction("delete", "");
+    voteAction("no", "");
 }
 
 
@@ -1186,6 +1188,12 @@ void MasternodeList::on_bnVoteAbstain_clicked()
     voteAbstainActionSLOT();
 }
 
+void MasternodeList::on_bnJunk_clicked()
+{
+    voteDeleteActionSLOT();
+}
+
+
 void MasternodeList::on_bnSendMessage_clicked()
 {
 
@@ -1310,3 +1318,4 @@ void MasternodeList::incomingMessage()
 {
     ui->listViewConversation->scrollToBottom();
 }
+
