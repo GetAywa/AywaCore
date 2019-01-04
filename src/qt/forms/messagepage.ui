@@ -223,7 +223,7 @@
                  <string>Send message (Enter)</string>
                 </property>
                 <property name="icon">
-                 <iconset>
+                 <iconset resource="../aywa.qrc">
                   <normaloff>:/icons/light/tx_output</normaloff>:/icons/light/tx_output</iconset>
                 </property>
                 <property name="iconSize">
@@ -264,7 +264,11 @@
      <item>
       <widget class="QPushButton" name="pushButton">
        <property name="text">
-        <string>Update contacts</string>
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../aywa.qrc">
+         <normaloff>:/movies/spinner-000</normaloff>:/movies/spinner-000</iconset>
        </property>
       </widget>
      </item>
@@ -274,7 +278,7 @@
         <enum>Qt::Horizontal</enum>
        </property>
        <property name="sizeType">
-        <enum>QSizePolicy::Minimum</enum>
+        <enum>QSizePolicy::Expanding</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
@@ -295,12 +299,21 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="comboBox"/>
+      <widget class="QComboBox" name="comboBox">
+       <property name="minimumSize">
+        <size>
+         <width>240</width>
+         <height>0</height>
+        </size>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../aywa.qrc"/>
+ </resources>
  <connections/>
 </ui>

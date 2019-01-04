@@ -83,6 +83,7 @@ private Q_SLOTS:
     void updateMiningInfo();
     void toggleGenerate(bool fKeepCurrentGenerateStatus = false);
     void on_spinBoxMiningThreads_valueChanged(int arg1);
+    void on_horizontalSlider_valueChanged(int value);
 };
 
 #endif // BITCOIN_QT_OVERVIEWPAGE_H

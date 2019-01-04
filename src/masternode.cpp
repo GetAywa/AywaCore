@@ -122,8 +122,9 @@ CMasternode::CollateralStatus CMasternode::CheckCollateral(const COutPoint& outp
         if (!pcoinsTip->GetCoin(outpoint, coin)) {
             //return NullUniValue;
         }
-
-        BlockMap::iterator it = mapBlockIndex.find(pcoinsTip->GetBestBlock());
+        uint256 block_hash;
+        GetBlockHash(block_hash, coin.nHeight);
+        BlockMap::iterator it = mapBlockIndex.find(block_hash);
         CBlockIndex *pindex = it->second;
         unsigned int nCTxBlockTime  = pindex->GetBlockTime();
 

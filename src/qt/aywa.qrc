@@ -1,4 +1,4 @@
-<!DOCTYPE RCC><RCC version="1.0">
+<RCC>
     <qresource prefix="/icons">
         <file alias="bitcoin">res/icons/bitcoin.png</file>
         <file alias="prompticon">res/icons/chevron.png</file>
@@ -296,6 +296,7 @@
         <file alias="drkblue_walletFrame_bg">res/images/trad/drkblue_walletFrame_bg.png</file>
         <file alias="splash">res/images/trad/splash.png</file>
         <file alias="splash_testnet">res/images/trad/splash_testnet.png</file>
+        <file alias="mining_power">res/images/trad/mining_power.png</file>
     </qresource>
     <qresource prefix="/movies">
         <file alias="spinner-000">res/movies/spinner-000.png</file>

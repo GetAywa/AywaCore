@@ -124,5 +124,6 @@ private Q_SLOTS:
     void on_listViewConversation_doubleClicked(const QModelIndex &index);
     //void updateMessages();
     void incomingMessage();
+    void on_bnJunk_clicked();
 };
 #endif // MASTERNODELIST_H

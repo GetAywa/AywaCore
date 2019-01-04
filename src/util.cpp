@@ -980,10 +980,14 @@ void SetThreadPriority(int nPriority)
 
 int GetNumCores()
 {
+    int result;
 #if BOOST_VERSION >= 105600
-    return boost::thread::physical_concurrency();
+    result = boost::thread::physical_concurrency();
+    return result==0 ? 1 : result;
 #else // Must fall back to hardware_concurrency, which unfortunately counts virtual cores
-    return boost::thread::hardware_concurrency();
+    //return boost::thread::hardware_concurrency();
+    result = boost::thread::hardware_concurrency();
+    return result==0 ? 1 : result;
 #endif
 }
 
