@@ -736,7 +736,7 @@ void OverviewPage::updateMiningInfo()
 
     ui->bnGenerate->setText(tr("Stop Mining"));
     ui->labelTotalHashRate->setText(QString::number(GetCurrentHashRate()));
-    ui->labelHashrate->setText("hash/sec");
+    ui->labelHashrate->setText(" hash/sec");
 
 }
 

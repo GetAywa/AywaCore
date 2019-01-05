@@ -34,8 +34,549 @@
      <item>
       <widget class="QTabWidget" name="tabWidget">
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
+       <widget class="QWidget" name="tabProposalVote">
+        <attribute name="title">
+         <string>Proposals</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <widget class="QSplitter" name="splitterMain">
+           <property name="mouseTracking">
+            <bool>false</bool>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <widget class="QWidget" name="horizontalLayoutWidget">
+            <layout class="QVBoxLayout" name="verticalLayout_4">
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_31">
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QCheckBox" name="checkboxProposaslToVote">
+                 <property name="text">
+                  <string>Vote required</string>
+                 </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QCheckBox" name="cbActiveOnly">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
+                 <property name="text">
+                  <string>Active Only</string>
+                 </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_31">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>10</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_count1">
+                 <property name="text">
+                  <string>Total</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="countProposalsLabel">
+                 <property name="text">
+                  <string>0</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label">
+                 <property name="text">
+                  <string>proposals</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QTableWidget" name="tableWidgetProposals">
+               <property name="editTriggers">
+                <set>QAbstractItemView::DoubleClicked</set>
+               </property>
+               <property name="alternatingRowColors">
+                <bool>true</bool>
+               </property>
+               <property name="selectionMode">
+                <enum>QAbstractItemView::SingleSelection</enum>
+               </property>
+               <property name="selectionBehavior">
+                <enum>QAbstractItemView::SelectRows</enum>
+               </property>
+               <property name="sortingEnabled">
+                <bool>true</bool>
+               </property>
+               <attribute name="horizontalHeaderStretchLastSection">
+                <bool>true</bool>
+               </attribute>
+               <column>
+                <property name="text">
+                 <string>Title</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Created</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Abs. Yes Votes</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Address</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Amount</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Start Payments</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Period</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>End Payments</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Proposal Hash</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>TX Hash</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Vote</string>
+                </property>
+               </column>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_4">
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QPushButton" name="buttonNewProposal">
+                 <property name="text">
+                  <string>New Proposal...</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
+                 <property name="statusTip">
+                  <string>Additiona info</string>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../aywa.qrc">
+                   <normaloff>:/icons/trad/transaction_0</normaloff>:/icons/trad/transaction_0</iconset>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_4">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_text4567">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>Refreshed in</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="labelProposalTabSeconds">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>0</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_4">
+                 <property name="text">
+                  <string>sec</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="buttonUpdateList">
+                 <property name="statusTip">
+                  <string>Update now</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../aywa.qrc">
+                   <normaloff>:/movies/spinner-000</normaloff>:/movies/spinner-000</iconset>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="verticalLayoutWidget">
+            <layout class="QVBoxLayout" name="verticalLayout_2">
+             <item>
+              <widget class="QSplitter" name="splitterHorizontal">
+               <property name="mouseTracking">
+                <bool>false</bool>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <widget class="QWidget" name="gridLayoutWidget">
+                <layout class="QGridLayout" name="gridLayout_3">
+                 <item row="2" column="1">
+                  <layout class="QHBoxLayout" name="horizontalLayout_8">
+                   <property name="spacing">
+                    <number>6</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <widget class="QLabel" name="labelHash">
+                     <property name="text">
+                      <string>Hash:</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="ProposalHash_lineedit">
+                     <property name="enabled">
+                      <bool>true</bool>
+                     </property>
+                     <property name="mouseTracking">
+                      <bool>false</bool>
+                     </property>
+                     <property name="focusPolicy">
+                      <enum>Qt::NoFocus</enum>
+                     </property>
+                     <property name="acceptDrops">
+                      <bool>false</bool>
+                     </property>
+                     <property name="placeholderText">
+                      <string>Proposal hash</string>
+                     </property>
+                     <property name="clearButtonEnabled">
+                      <bool>false</bool>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QTextEdit" name="ProposalDescription_plainTextEdit">
+                   <property name="font">
+                    <font>
+                     <pointsize>12</pointsize>
+                    </font>
+                   </property>
+                   <property name="toolTip">
+                    <string>Proposal Description</string>
+                   </property>
+                   <property name="html">
+                    <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'.SF NS Text'; font-size:13pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QGroupBox" name="groupBox_2">
+                   <property name="title">
+                    <string> Proposal info</string>
+                   </property>
+                   <layout class="QHBoxLayout" name="horizontalLayout_7">
+                    <property name="leftMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="rightMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <layout class="QGridLayout" name="gridLayout_5">
+                      <property name="topMargin">
+                       <number>0</number>
+                      </property>
+                      <item row="5" column="1">
+                       <widget class="QLabel" name="labelProposalAmountAndDays">
+                        <property name="toolTip">
+                         <string>Requested Budget per Day and Days period</string>
+                        </property>
+                        <property name="text">
+                         <string/>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="5" column="0">
+                       <widget class="QLabel" name="labelTotalProposalBudget">
+                        <property name="font">
+                         <font>
+                          <weight>75</weight>
+                          <bold>true</bold>
+                         </font>
+                        </property>
+                        <property name="toolTip">
+                         <string>Proposal Total Requested Budget</string>
+                        </property>
+                        <property name="text">
+                         <string/>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="4" column="1">
+                       <widget class="QLabel" name="labelProposalFromToDate">
+                        <property name="toolTip">
+                         <string>Proposal Period</string>
+                        </property>
+                        <property name="text">
+                         <string/>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="4" column="0">
+                       <widget class="QLabel" name="labelProposalName">
+                        <property name="font">
+                         <font>
+                          <pointsize>12</pointsize>
+                          <weight>75</weight>
+                          <bold>true</bold>
+                         </font>
+                        </property>
+                        <property name="mouseTracking">
+                         <bool>true</bool>
+                        </property>
+                        <property name="toolTip">
+                         <string>Proposal Name</string>
+                        </property>
+                        <property name="text">
+                         <string/>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+               <widget class="QWidget" name="gridLayoutWidget_2">
+                <layout class="QGridLayout" name="gridLayout_4">
+                 <property name="verticalSpacing">
+                  <number>0</number>
+                 </property>
+                 <item row="3" column="0">
+                  <layout class="QHBoxLayout" name="horizontalLayout_9">
+                   <property name="topMargin">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <widget class="QGroupBox" name="groupBox">
+                     <property name="title">
+                      <string>Vote for selected proposal:</string>
+                     </property>
+                     <layout class="QHBoxLayout" name="horizontalLayout_5">
+                      <property name="topMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="bottomMargin">
+                       <number>0</number>
+                      </property>
+                      <item>
+                       <widget class="QPushButton" name="bnVoteYes">
+                        <property name="toolTip">
+                         <string>Vote YES</string>
+                        </property>
+                        <property name="text">
+                         <string>YES</string>
+                        </property>
+                        <property name="icon">
+                         <iconset resource="../aywa.qrc">
+                          <normaloff>:/icons/trad/synced</normaloff>:/icons/trad/synced</iconset>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QPushButton" name="bnVoteNo">
+                        <property name="toolTip">
+                         <string>Vote NO</string>
+                        </property>
+                        <property name="text">
+                         <string>NO</string>
+                        </property>
+                        <property name="icon">
+                         <iconset resource="../aywa.qrc">
+                          <normaloff>:/icons/trad/drkblue_remove</normaloff>:/icons/trad/drkblue_remove</iconset>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QPushButton" name="bnJunk">
+                        <property name="text">
+                         <string>Junk</string>
+                        </property>
+                        <property name="icon">
+                         <iconset>
+                          <normaloff>:/icons/trad/transaction_abandoned</normaloff>:/icons/trad/transaction_abandoned</iconset>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <spacer name="horizontalSpacer">
+                        <property name="orientation">
+                         <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>40</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                      <item>
+                       <widget class="QPushButton" name="bnVoteAbstain">
+                        <property name="text">
+                         <string>Cancel Votes</string>
+                        </property>
+                        <property name="icon">
+                         <iconset resource="../aywa.qrc">
+                          <normaloff>:/icons/trad/quit</normaloff>:/icons/trad/quit</iconset>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="2" column="0">
+                  <layout class="QHBoxLayout" name="horizontalLayout_6">
+                   <property name="spacing">
+                    <number>0</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <widget class="QLineEdit" name="lineeditMessage">
+                     <property name="placeholderText">
+                      <string>Type your text here. Press Enter to send.</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QToolButton" name="bnSendMessage">
+                     <property name="mouseTracking">
+                      <bool>true</bool>
+                     </property>
+                     <property name="toolTip">
+                      <string>Send message</string>
+                     </property>
+                     <property name="text">
+                      <string>⏎</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QListView" name="listViewConversation"/>
+                 </item>
+                </layout>
+               </widget>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </widget>
+         </item>
+        </layout>
+       </widget>
        <widget class="QWidget" name="tabAllMasternodes">
         <attribute name="title">
          <string>Masternodes</string>
@@ -331,552 +872,12 @@ if your masternode should be running but you still do not see &quot;ENABLED&quot
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="tabProposalVote">
-        <attribute name="title">
-         <string>Proposals</string>
-        </attribute>
-        <layout class="QVBoxLayout" name="verticalLayout_3">
-         <item>
-          <widget class="QSplitter" name="splitterMain">
-           <property name="mouseTracking">
-            <bool>false</bool>
-           </property>
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <widget class="QWidget" name="horizontalLayoutWidget">
-            <layout class="QVBoxLayout" name="verticalLayout_4">
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_31">
-               <property name="bottomMargin">
-                <number>0</number>
-               </property>
-               <item>
-                <widget class="QCheckBox" name="checkboxProposaslToVote">
-                 <property name="text">
-                  <string>Vote required</string>
-                 </property>
-                 <property name="checked">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QCheckBox" name="cbActiveOnly">
-                 <property name="enabled">
-                  <bool>true</bool>
-                 </property>
-                 <property name="text">
-                  <string>Active Only</string>
-                 </property>
-                 <property name="checked">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <spacer name="horizontalSpacer_31">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>10</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item>
-                <widget class="QLabel" name="label_count1">
-                 <property name="text">
-                  <string>Total</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLabel" name="countProposalsLabel">
-                 <property name="text">
-                  <string>0</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLabel" name="label">
-                 <property name="text">
-                  <string>proposals</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <widget class="QTableWidget" name="tableWidgetProposals">
-               <property name="editTriggers">
-                <set>QAbstractItemView::DoubleClicked</set>
-               </property>
-               <property name="alternatingRowColors">
-                <bool>true</bool>
-               </property>
-               <property name="selectionMode">
-                <enum>QAbstractItemView::SingleSelection</enum>
-               </property>
-               <property name="selectionBehavior">
-                <enum>QAbstractItemView::SelectRows</enum>
-               </property>
-               <property name="sortingEnabled">
-                <bool>true</bool>
-               </property>
-               <attribute name="horizontalHeaderStretchLastSection">
-                <bool>true</bool>
-               </attribute>
-               <column>
-                <property name="text">
-                 <string>Title</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Created</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Abs. Yes Votes</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Address</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Amount</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Start Payments</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Period</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>End Payments</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Proposal Hash</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>TX Hash</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Vote</string>
-                </property>
-               </column>
-              </widget>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_4">
-               <property name="leftMargin">
-                <number>0</number>
-               </property>
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <item>
-                <widget class="QPushButton" name="buttonNewProposal">
-                 <property name="text">
-                  <string>New Proposal...</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="pushButton">
-                 <property name="statusTip">
-                  <string>Additiona info</string>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../aywa.qrc">
-                   <normaloff>:/icons/trad/transaction_0</normaloff>:/icons/trad/transaction_0</iconset>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <spacer name="horizontalSpacer_4">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item>
-                <widget class="QLabel" name="label_text4567">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="text">
-                  <string>Refreshed in</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLabel" name="labelProposalTabSeconds">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="text">
-                  <string>0</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLabel" name="label_4">
-                 <property name="text">
-                  <string>sec</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="buttonUpdateList">
-                 <property name="statusTip">
-                  <string>Update now</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../aywa.qrc">
-                   <normaloff>:/movies/spinner-000</normaloff>:/movies/spinner-000</iconset>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-            </layout>
-           </widget>
-           <widget class="QWidget" name="verticalLayoutWidget">
-            <layout class="QVBoxLayout" name="verticalLayout_2">
-             <item>
-              <widget class="QSplitter" name="splitterHorizontal">
-               <property name="mouseTracking">
-                <bool>false</bool>
-               </property>
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <widget class="QWidget" name="gridLayoutWidget">
-                <layout class="QGridLayout" name="gridLayout_3">
-                 <item row="2" column="1">
-                  <layout class="QHBoxLayout" name="horizontalLayout_8">
-                   <property name="spacing">
-                    <number>6</number>
-                   </property>
-                   <property name="topMargin">
-                    <number>0</number>
-                   </property>
-                   <item>
-                    <widget class="QLabel" name="labelHash">
-                     <property name="text">
-                      <string>Hash:</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QLineEdit" name="ProposalHash_lineedit">
-                     <property name="enabled">
-                      <bool>true</bool>
-                     </property>
-                     <property name="mouseTracking">
-                      <bool>false</bool>
-                     </property>
-                     <property name="focusPolicy">
-                      <enum>Qt::NoFocus</enum>
-                     </property>
-                     <property name="acceptDrops">
-                      <bool>false</bool>
-                     </property>
-                     <property name="placeholderText">
-                      <string>Proposal hash</string>
-                     </property>
-                     <property name="clearButtonEnabled">
-                      <bool>false</bool>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                 <item row="1" column="1">
-                  <widget class="QTextEdit" name="ProposalDescription_plainTextEdit">
-                   <property name="font">
-                    <font>
-                     <pointsize>12</pointsize>
-                    </font>
-                   </property>
-                   <property name="toolTip">
-                    <string>Proposal Description</string>
-                   </property>
-                   <property name="html">
-                    <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'.SF NS Text'; font-size:13pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="1">
-                  <widget class="QGroupBox" name="groupBox_2">
-                   <property name="title">
-                    <string> Proposal info</string>
-                   </property>
-                   <layout class="QHBoxLayout" name="horizontalLayout_7">
-                    <property name="leftMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="topMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="rightMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="bottomMargin">
-                     <number>0</number>
-                    </property>
-                    <item>
-                     <layout class="QGridLayout" name="gridLayout_5">
-                      <property name="topMargin">
-                       <number>0</number>
-                      </property>
-                      <item row="5" column="1">
-                       <widget class="QLabel" name="labelProposalAmountAndDays">
-                        <property name="toolTip">
-                         <string>Requested Budget per Day and Days period</string>
-                        </property>
-                        <property name="text">
-                         <string/>
-                        </property>
-                       </widget>
-                      </item>
-                      <item row="5" column="0">
-                       <widget class="QLabel" name="labelTotalProposalBudget">
-                        <property name="font">
-                         <font>
-                          <weight>75</weight>
-                          <bold>true</bold>
-                         </font>
-                        </property>
-                        <property name="toolTip">
-                         <string>Proposal Total Requested Budget</string>
-                        </property>
-                        <property name="text">
-                         <string/>
-                        </property>
-                        <property name="alignment">
-                         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                        </property>
-                       </widget>
-                      </item>
-                      <item row="4" column="1">
-                       <widget class="QLabel" name="labelProposalFromToDate">
-                        <property name="toolTip">
-                         <string>Proposal Period</string>
-                        </property>
-                        <property name="text">
-                         <string/>
-                        </property>
-                       </widget>
-                      </item>
-                      <item row="4" column="0">
-                       <widget class="QLabel" name="labelProposalName">
-                        <property name="font">
-                         <font>
-                          <pointsize>12</pointsize>
-                          <weight>75</weight>
-                          <bold>true</bold>
-                         </font>
-                        </property>
-                        <property name="mouseTracking">
-                         <bool>true</bool>
-                        </property>
-                        <property name="toolTip">
-                         <string>Proposal Name</string>
-                        </property>
-                        <property name="text">
-                         <string/>
-                        </property>
-                       </widget>
-                      </item>
-                     </layout>
-                    </item>
-                   </layout>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-               <widget class="QWidget" name="gridLayoutWidget_2">
-                <layout class="QGridLayout" name="gridLayout_4">
-                 <property name="verticalSpacing">
-                  <number>0</number>
-                 </property>
-                 <item row="3" column="0">
-                  <layout class="QHBoxLayout" name="horizontalLayout_9">
-                   <property name="topMargin">
-                    <number>0</number>
-                   </property>
-                   <item>
-                    <widget class="QGroupBox" name="groupBox">
-                     <property name="title">
-                      <string>Vote for selected proposal:</string>
-                     </property>
-                     <layout class="QHBoxLayout" name="horizontalLayout_5">
-                      <property name="topMargin">
-                       <number>0</number>
-                      </property>
-                      <property name="bottomMargin">
-                       <number>0</number>
-                      </property>
-                      <item>
-                       <widget class="QPushButton" name="bnVoteYes">
-                        <property name="toolTip">
-                         <string>Vote YES</string>
-                        </property>
-                        <property name="text">
-                         <string>YES</string>
-                        </property>
-                        <property name="icon">
-                         <iconset resource="../aywa.qrc">
-                          <normaloff>:/icons/trad/synced</normaloff>:/icons/trad/synced</iconset>
-                        </property>
-                       </widget>
-                      </item>
-                      <item>
-                       <widget class="QPushButton" name="bnVoteNo">
-                        <property name="toolTip">
-                         <string>Vote NO</string>
-                        </property>
-                        <property name="text">
-                         <string>NO</string>
-                        </property>
-                        <property name="icon">
-                         <iconset resource="../aywa.qrc">
-                          <normaloff>:/icons/trad/drkblue_remove</normaloff>:/icons/trad/drkblue_remove</iconset>
-                        </property>
-                       </widget>
-                      </item>
-                      <item>
-                       <widget class="QPushButton" name="bnJunk">
-                        <property name="text">
-                         <string>Junk</string>
-                        </property>
-                        <property name="icon">
-                         <iconset resource="../aywa.qrc">
-                          <normaloff>:/icons/trad/transaction_abandoned</normaloff>:/icons/trad/transaction_abandoned</iconset>
-                        </property>
-                       </widget>
-                      </item>
-                      <item>
-                       <spacer name="horizontalSpacer">
-                        <property name="orientation">
-                         <enum>Qt::Horizontal</enum>
-                        </property>
-                        <property name="sizeHint" stdset="0">
-                         <size>
-                          <width>40</width>
-                          <height>20</height>
-                         </size>
-                        </property>
-                       </spacer>
-                      </item>
-                      <item>
-                       <widget class="QPushButton" name="bnVoteAbstain">
-                        <property name="text">
-                         <string>Cancel Votes</string>
-                        </property>
-                        <property name="icon">
-                         <iconset resource="../aywa.qrc">
-                          <normaloff>:/icons/trad/quit</normaloff>:/icons/trad/quit</iconset>
-                        </property>
-                       </widget>
-                      </item>
-                     </layout>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                 <item row="2" column="0">
-                  <layout class="QHBoxLayout" name="horizontalLayout_6">
-                   <property name="spacing">
-                    <number>0</number>
-                   </property>
-                   <property name="topMargin">
-                    <number>0</number>
-                   </property>
-                   <item>
-                    <widget class="QLineEdit" name="lineeditMessage">
-                     <property name="placeholderText">
-                      <string>Type your text here. Press Enter to send.</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QToolButton" name="bnSendMessage">
-                     <property name="mouseTracking">
-                      <bool>true</bool>
-                     </property>
-                     <property name="toolTip">
-                      <string>Send message</string>
-                     </property>
-                     <property name="text">
-                      <string>⏎</string>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QListView" name="listViewConversation"/>
-                 </item>
-                </layout>
-               </widget>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </widget>
-         </item>
-        </layout>
-       </widget>
       </widget>
      </item>
     </layout>
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../aywa.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

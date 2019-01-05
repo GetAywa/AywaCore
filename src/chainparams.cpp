@@ -118,10 +118,10 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_DIP0001].nThreshold = 3226; // 80% of 4032
 
         // The best chain should have at least this much work.
-        consensus.nMinimumChainWork = uint256S("0x00"); // TODO:
+        consensus.nMinimumChainWork = uint256S("0x000000000000000000000000000000000000000000000000000000676eacd7c7");
 
         // By default assume that the signatures in ancestors of this block are valid.
-        consensus.defaultAssumeValid = uint256S("0x00");//TODO:
+        consensus.defaultAssumeValid = uint256S("0x00000138c8bcb84d4941454d2f364d2326ea058093fcddc01f90ebf11dd62733");
         /**
          * The message start string is designed to be unlikely to occur in normal data.
          * The characters are rarely used upper ASCII, not valid as UTF-8, and produce
@@ -187,11 +187,13 @@ public:
             ( 10000, uint256S("0x0000f7692369f3f5fb4e78de09f82ae834211d5b19a65b55e09d44a339b9fb00"))
             ( 20000, uint256S("0x0000795591fea9bc4cd5d339a14a919ddad387b4c175ed43920682458a1ebfbb"))
             ( 30000, uint256S("0x0000017d8f1d38ddc2d1ec5925a638fecb7aa4efd5c4b15d59e8a38e92059cbc"))
-            ( 32000, uint256S("0x00000221d0998561a319c7a70b94862117cc06060f3d68bed18ba2d191366f84"))    ,
-              1541225101, // * UNIX timestamp of last checkpoint block
-              34519,       // * total number of transactions between genesis and last checkpoint
+            ( 32000, uint256S("0x00000221d0998561a319c7a70b94862117cc06060f3d68bed18ba2d191366f84"))
+            ( 50000, uint256S("0x000002fa9c1eca8536439c7f1d8b3d8ab96ff222bba43e363b437fbe94fc0acc"))
+            ( 85000, uint256S("0x00000138c8bcb84d4941454d2f364d2326ea058093fcddc01f90ebf11dd62733")),
+              1545995175, // * UNIX timestamp of last checkpoint block
+              99812,       // * total number of transactions between genesis and last checkpoint
                           //   (the tx=... number in the SetBestChain debug.log lines)
-              5000        // * estimated number of transactions per day after checkpoint
+              1920        // * estimated number of transactions per day after checkpoint
 
 
 
