@@ -32,7 +32,7 @@ Instructions: Homebrew
 
 #### Install dependencies using Homebrew
 
-    brew install autoconf automake berkeley-db4 libtool boost miniupnpc openssl pkg-config protobuf libevent qt
+    brew install autoconf automake berkeley-db4 libtool boost bjam miniupnpc openssl pkg-config protobuf libevent qt
 
 NOTE: Building with Qt4 is still supported, however, doing so could result in a broken UI. Therefore, building with Qt5 is recommended. Be aware that Qt5 5.7+ requires C++11 compiler support.
 
